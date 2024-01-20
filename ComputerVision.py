@@ -28,7 +28,7 @@ try:
 
 except ImportError:
     currentProgramFilename = os.path.basename(__file__)
-	ImportDebugObject = Debug(True, currentProgramFilename)
+    ImportDebugObject = Debug(True, currentProgramFilename)
     ImportDebugObject.Dprint("Run ComputerVision.py with python not PYTHON3")
 
 
@@ -250,21 +250,20 @@ class ComputerVision():
 
         return qrCodeInt
 
-	def ScanQRcode():
-		"""
-		Use https://manpages.debian.org/jessie/fswebcam/fswebcam.1.en.html
-		https://www.raspberrypi.org/documentation/usage/webcams/
-		https://www.raspberrypi.org/forums/viewtopic.php?t=142489
-		https://elinux.org/RPi_USB_Webcams
-		https://www.raspberrypi.org/forums/viewtopic.php?t=23800
-		
-		"""
-		img = cv2.imread(path, mode)  # 0 for black, 1 for rgb
-		check_call("fwswebcam -d /dev/video0 - r 960x720 pic.jpg" , shell=True)
+    def ScanQRcode():
+        """
+        Use https://manpages.debian.org/jessie/fswebcam/fswebcam.1.en.html
+        https://www.raspberrypi.org/documentation/usage/webcams/
+        https://www.raspberrypi.org/forums/viewtopic.php?t=142489
+        https://elinux.org/RPi_USB_Webcams
+        https://www.raspberrypi.org/forums/viewtopic.php?t=23800
+        """
+        img = cv2.imread(path, mode)  # 0 for black, 1 for rgb
+        check_call("fwswebcam -d /dev/video0 - r 960x720 pic.jpg" , shell=True)
 
-		img = /pic.jpg
+        #img = /pic.jpg
 
-		return img
+        return img
 
 if __name__ == "__main__":
     object = ComputerVision()
