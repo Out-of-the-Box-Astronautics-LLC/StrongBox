@@ -9,6 +9,7 @@ __deprecated__ = False
 __version__    = "0.0.1"
 __doc__        = "Simple PWA to display the cost of the electrical power measured by the Sense Flex product"
 """
+# https://caffeinedev.medium.com/building-and-installing-opencv-on-m1-macbook-c4654b10c188
 
 # Disable PyLint linting messages that seem unuseful
 # https://pypi.org/project/pylint/
