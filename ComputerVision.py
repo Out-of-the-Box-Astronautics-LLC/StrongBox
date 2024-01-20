@@ -1,12 +1,14 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 """
-__author__  = "Blaze Sanders"
-__email__   = "blaze.d.a.sanders@gmail.com"
-__company__ = "CocoTaps"
-__status__  = "Development"
-__date__    = "Late Updated: 2020-07-15"
-__doc__     = "Script to analyze the size of coconuts & scan QR codes, so that we make 99% reliable Tapomatic"
+__authors__    = ["Blaze Sanders"]
+__contact__    = "blazes@mfc.us"
+__copyright__  = "Copyright 2023"
+__license__    = "MIT License"
+__status__     = "Development"
+__deprecated__ = False
+__version__    = "0.0.1"
 """
+# Analyze the size of Moon craters and determine height above the surface
 
 # Useful standard Python system jazz
 import sys, time, traceback, argparse, string
@@ -14,8 +16,9 @@ import sys, time, traceback, argparse, string
 # Allow program to extract filename of the current file
 import os
 
-# Robotic Beverage Technologies code for custom data logging and terminal debugging output
+# Custom data logging and terminal debugging output
 from Debug import *
+
 
 try:
     # OpenCV magic
