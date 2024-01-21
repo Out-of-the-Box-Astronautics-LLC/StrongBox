@@ -17,6 +17,8 @@ import sys, time, traceback, argparse, string
 # Allow program to extract filename of the current file
 import os
 
+# 
+# https://pypi.org/project/opencv-python/ 
 import cv2
 import numpy as np
 
@@ -37,9 +39,14 @@ class MoonAutoPilot:
             img (cv2) : -- Image header object
         """
         # TODO: CHECK FOR .PNG FILE EXTENSION
-        path = "static/CVImages/" + filename
+        path = "images/" + filename
         print(" path " + path)
 
         img = cv2.imread(path, mode)
 
         return img
+    
+    
+if __name__ == "__main__":
+    strongBox = MoonAutoPilot()
+    strongBox.load_image("NearSurveyor6_HeightUnknown.png", 0)
