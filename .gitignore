@@ -2,3 +2,5 @@
 .env
 .DS_Store
 __pycache__
+OpenCV_Download_Build_Directory/
+diff.txt
