@@ -2,7 +2,7 @@
 """
 __authors__    = ["Blaze Sanders"]
 __contact__    = "blazes@mfc.us"
-__copyright__  = "Copyright 2023"
+__copyright__  = "Copyright 2024"
 __license__    = "MIT License"
 __status__     = "Development"
 __deprecated__ = False
@@ -21,26 +21,30 @@ from datetime import datetime, time, timedelta  # Manipulate calendar dates & ti
 import traceback
 import argparse
 import os                                       # Allow program to extract filename of the current file
-#TODO REMOVE? import string 
+#TODO REMOVE? import string
 
 
 ## 3rd party libraries
 # OpenCV (Open Source Computer Vision Library) for computer vision and machine learning https://opencv.org
-# https://pypi.org/project/opencv-python/ 
+# https://pypi.org/project/opencv-python/
 import cv2
 
 # NumPy (Numerical Python)is an universal standard for working with numerical data
 # https://numpy.org/install/
 import numpy as np
 
-
 ## Internally developed modules
 import GlobalConstants as GC    # Useful global constants used across multiple files
+import Crater as cr             # Crater class to define name, size, and location of craters
+import Database                 # SQLite database to store crate locations
+
 
 class MoonAutoPilot:
 
+    # Class global constants
     GRAY_SCALE_MODE = 0
     RGB_MODE = 1
+
 
     def __init__(self, name: str):
         self.spacecraftName = name
@@ -49,6 +53,7 @@ class MoonAutoPilot:
         self.referenceMoonImages = []
         self.referenceSpaceImages = []
         self.flameyEndDown = False      # https://xkcd.com/1133/ & https://imgs.xkcd.com/comics/up_goer_five.png and https://twitter.com/erdayastronaut/status/1433640020288618497?s=61&t=eS1giEUgStrI7lLV1Klx5Q
+        self.craterDB = Database("MoonCraterPositions.db")
 
 
     def load_image(self, filename: str, mode: int) -> cv2:
@@ -63,16 +68,40 @@ class MoonAutoPilot:
         """
         filenameParts = filename.split('.')
         if filenameParts[1].upper() != "PNG" and filenameParts[1].upper() != "JPEG":
-          return None  
-    
+          return None
+
         filepath = "images/" + filename
         if GC.DEBUG_STATEMENTS_ON: print(f"Using image at filepath '{filepath}'")
 
         img = cv2.imread(filepath, mode)
 
         return img
-    
-    
+
+    def find_crater_centers(self) -> bool:
+        """
+
+        Return False if crater center couldn't be determine, True otherwise
+        """
+
+        circleFound= 
+        centerDetermined =
+        if (circleFound and centerDetermined):
+            return False
+
+        return True
+
+
+    def store_crater_grid_pattern(self, x: int, y: int):
+        pass
+
+
+    def store_crater_coordinates(self, c: Crater):
+
+        latitude = GC.GRID_CONSTANT * c.xCoordinate
+        longitude = GC.GRID_CONSTANT * c.yCoordinate
+        self.craterDB.insert_crater(latitude, longitude)
+
+
     def show_image_for_debugging(self, name, img) -> None:
         """
         Prams:Img to be printed
@@ -84,8 +113,8 @@ class MoonAutoPilot:
         cv2.destroyAllWindows()
         if cv2.waitKey(0) == ord('q'):
             if GC.DEBUG_STATEMENTS_ON: print(f"Closing debugging window '{name}'")
-    
-    
+
+
 if __name__ == "__main__":
     strongBox = MoonAutoPilot("AirPlant-1")
     images = ['NearSurveyor6_HeightUnknown.png']
