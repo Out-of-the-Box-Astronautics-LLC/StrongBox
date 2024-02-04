@@ -5,7 +5,7 @@ __contact__    = "blazes@mfc.us"
 __copyright__  = "Copyright 2023"
 __license__    = "MIT License"
 __status__     = "Development"
-__deprecated__ = False
+__deprecated__ = "False"
 __version__    = "0.1.0"
 """
 
@@ -21,7 +21,7 @@ from time import sleep                          # Pause program execution
 import os                                       # Get filename information like directoty and file path
 import csv                                      # Manipulate .CSV files for data reporting
 import json                                     # Use to serialize a list of list and insert into TEXT column of SQLite database
-from typing import Optional                     # TODO Give function argument an optional 
+from typing import Optional                     # TODO Give function argument an optional
 
 ## 3rd party libraries
 import pytz 					                # World Timezone Definitions  https://pypi.org/project/pytz/
@@ -69,15 +69,15 @@ class Database:
         """
         # Each day has 24 hours with 23 different values of 0100 to 2300
         for hourNumber in range(100, 2400, 100):
-            self.insert_week_graph_table(0, hourNumber)
+            self.insert_day_graph_table(0, 0, 0, hourNumber)
 
         # Each year has 52 weeks
         for weekNumber in range(1, 53):
-            self.insert_week_graph_table(0, weekNumber)
+            self.insert_week_graph_table(0, 0, 0, weekNumber)
 
         # Each year has 12 months
         for monthNumber in range(1, 13):
-            self.insert_month_graph_table(0, monthNumber)
+            self.insert_month_graph_table(0, 0, 0, monthNumber)
 
 
     #TODO UPDATE NEXT THREE FUNCTIONS WITH MATCH DB DEFINTATIONS
@@ -127,6 +127,9 @@ class Database:
 
         return now
 
+    def insert_crater(self, latitude: float, longitude: float):
+        pass
+
 
     def insert_daily_energy_table(self, energy: int, cost: float, date: str) -> int:
         """ Insert or update the DailyEnergyTable SQLite table with data Sense energy sensor collected
@@ -137,11 +140,10 @@ class Database:
             date (str): Timestamp in ISO8601 format for the date energy was used (e.g 2024-01-01)
 
         Returns:
-            int: Database index id of last row inserted
+            int: Database index id of last row inserted OR -1 if
         """
-        lastDatabaseIndexInserted = -1
-
-        results, isEmpty, isValid = self.get_daily_watthours(date)
+        timeStamp = str(datetime.strptime(date, '%Y-%m-%d').isoformat(timespec="minutes")[0:10])
+        results, isEmpty, isValid = self.get_daily_sensor_data(timeStamp)
         if GC.DEBUG_STATEMENTS_ON: print(f"Tuple returned was: {(results, isEmpty, isValid)}")
 
         try:
@@ -157,8 +159,10 @@ class Database:
 
         lastDatabaseIndexInserted = self.cursor.lastrowid
 
-        self.commit_changes()
-
+        if lastDatabaseIndexInserted is not None:
+            self.commit_changes()
+        else:
+            lastDatabaseIndexInserted = -1
 
         return lastDatabaseIndexInserted
 
@@ -174,11 +178,10 @@ class Database:
         Returns:
             int: Database index id of last row inserted
         """
+        timeStamp = str(datetime.strptime(date, '%Y-%m-%d').isoformat(timespec="minutes")[0:10])
         current_week_number = datetime.strptime(date, '%Y-%m-%d').isocalendar()[1]
 
-        lastDatabaseIndexInserted = -1
-
-        results, isEmpty, isValid = self.get_weekly_watthours(current_week_number)
+        results, isEmpty, isValid = self.get_daily_sensor_data(timeStamp)
         if GC.DEBUG_STATEMENTS_ON: print(f"Tuple returned was: {(results, isEmpty, isValid)}")
         try:
             if(results):
@@ -192,8 +195,10 @@ class Database:
             self.insert_debug_logging_table("Error occured while inserting data...")
 
         lastDatabaseIndexInserted = self.cursor.lastrowid
-
-        self.commit_changes()
+        if lastDatabaseIndexInserted is not None:
+            self.commit_changes()
+        else:
+            lastDatabaseIndexInserted = -1
 
         return lastDatabaseIndexInserted
 
@@ -208,7 +213,16 @@ class Database:
         self.commit_changes()
 
 
-    def query_table(self, tableName: str, searchTerm: str = None, row: Optional[int]= None, column: Optional[int]= None) -> tuple:
+    def get_daily_sensor_data(self, date: str) -> tuple:
+        return GC.TODO, GC.TODO, GC.TODO
+
+
+
+    def get_weekly_sensor_data(self, date: str):
+            pass
+
+
+    def query_table(self, tableName: str, searchTerm: Optional[str] = None, row: Optional[int]= None, column: Optional[int]= None) -> tuple:
         """ Return every row of a table from a *.db database
 
         Args:
@@ -242,12 +256,15 @@ class Database:
             if row == None and column == None:
                 return result, isEmpty, isValid
             elif column == None:
-                return result[row-1], isEmpty, isValid
+                if row is not None:
+                    return result[row-1], isEmpty, isValid
             else:
-                if column == GC.IMAGE_URL_COLUMN_NUMBER:
-                    return json.loads(result[row-1][column]), isEmpty, isValid
+                if column == GC.TODO:
+                     if row is not None:
+                         return json.loads(result[row-1][column]), isEmpty, isValid
                 else:
-                    return result[row-1][column], isEmpty, isValid
+                     if row is not None:
+                         return result[row-1][column], isEmpty, isValid
 
         except IndexError:
             if GC.DEBUG_STATEMENTS_ON: self.insert_debug_logging_table("INSIDE INDEX ERROR")
@@ -257,57 +274,8 @@ class Database:
             if GC.DEBUG_STATEMENTS_ON: self.insert_debug_logging_table(f"INSIDE OPERATIONAL ERROR")
             return None, None, False
 
-
-    def calculate_daily_total_wattHour(self, date: datetime) -> int:
-        """ Calculate total amount of energy (wH) used on a specific date
-
-        Args:
-            dateToCalulate (datetime): ISO-8601 date (e.g. "2023-08-22")
-
-        Returns:
-            int: Total energy (wH) used
-        """
-        data = self.query_table("DailyEnergyTable")
-        result = list(filter(lambda t: t[GC.EMPLOYEE_ID_COLUMN_NUMBER] == id, data))
-        dateToCalulate = date.isoformat(timespec="minutes")[0:10]
-        finalResult = list(filter(lambda t: t[GC.TIMESTAMP_COLUMN_NUMBER].startswith(dateToCalulate), result))
-        try:
-            checkInIsoString = finalResult[0][GC.TIMESTAMP_COLUMN_NUMBER]
-            datetimeCheckInObject = datetime.fromisoformat(checkInIsoString)     # Convert the ISO strings to datetime objects
-
-        except IndexError:
-            self.insert_debug_logging_table(f'Employee ID #{id} never clocked in on {dateToCalulate}')
-            clockedIn = False
-            datetimeCheckInObject = None
-
-        data = self.query_table("CheckOutTable")
-        result = list(filter(lambda t: t[GC.EMPLOYEE_ID_COLUMN_NUMBER] == id, data))
-        finalResult = list(filter(lambda t: t[GC.TIMESTAMP_COLUMN_NUMBER].startswith(dateToCalulate), result))
-        try:
-            checkOutIsoString = finalResult[0][GC.TIMESTAMP_COLUMN_NUMBER]
-            datetimeCheckOutObject = datetime.fromisoformat(checkOutIsoString)   # Convert the ISO strings to datetime objects
-
-        except IndexError:
-            self.insert_debug_logging_table(f'Employee ID #{id} never clocked out on {dateToCalulate}')
-            clockedOut = False
-            datetimeCheckOutObject = None
-
-        elaspedHours = 0
-        if(not clockedIn and not clockedOut):
-            elaspedHours = 0.0
-        elif(clockedIn and not clockedOut):
-            elaspedHours = 12.0
-        elif(not clockedIn and not clockedOut):
-            elaspedHours = 12.0
-        else:
-            if datetimeCheckInObject and datetimeCheckOutObject:
-                # Perform the absolute value subtraction (timeDeltaObject is NEVER negative)
-                timeDeltaObject = datetimeCheckOutObject - datetimeCheckInObject
-                elaspedSeconds = timeDeltaObject.seconds
-                elaspedHours = elaspedSeconds / 3600.0
-
-        return elaspedHours
-
+        # Final code path
+        return None, None, False
 
     def export_table_to_csv(self, tableNames: list):
         """ Creates a filename assuming that the date that this code runs is a Monday
@@ -335,7 +303,7 @@ class Database:
 
                 if table == "WeeklyReportTable":
                     columnNames = ["Full Name", "Employee ID", "Total Hours", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Check In Comments", "Check Out Comments"]
-                    outputFilename = lastSunday + "_" + lastSaturday  + "_LaborerTimeReport.csv"  
+                    outputFilename = lastSunday + "_" + lastSaturday  + "_LaborerTimeReport.csv"
                     filePath = os.path.join(nextDirectory, outputFilename)
 
                     with open(filePath, 'w', newline='') as csvfile:
@@ -361,7 +329,7 @@ class Database:
 
                 elif table == "CheckOutTable":
                     columnNames = ["Full Name", "Employee ID", "Clock OUT Timestamp"]
-                    outputFilename = lastSunday + "_" + lastSaturday  + "_ClockOutTimes.csv" 
+                    outputFilename = lastSunday + "_" + lastSaturday  + "_ClockOutTimes.csv"
                     filePath = os.path.join(nextDirectory, outputFilename)
 
                     with open(filePath, 'w', newline='') as csvfile:
@@ -384,8 +352,6 @@ if __name__ == "__main__":
     print("Testing Database.py")
 
     db = Database('UnitTest.db')
-    db.update_graph_table('2024-01-01', TODO)
-    db.update_graph_table('2024-01-01', TODO)
 
     date = db.get_date_time()
     isoDateDay = date.isoformat()[0:10]
@@ -393,14 +359,15 @@ if __name__ == "__main__":
 
     oxygenLevel = 0             # Units are milliBar Plants have not started converting CO2 to O2
     carbonMonoxideLevel = 7     # Units are milliBar (Mars atomsphereic pressure is 7 milliBar on average
+    powerDraw = 0                # Units are watt-Hours
     missionStartHour = 1600     # Units of 24-hour clock, so 4 pm
-    db.insert_day_graph_table(oxygenLevel, carbonMonoxideLevel, wH: int, hourOfDayNum: int):
+    db.insert_day_graph_table(oxygenLevel, carbonMonoxideLevel, powerDraw, missionStartHour)
 
     results = db.query_table("CraterTable", "Shackelton Crater")
     if GC.DEBUG_STATEMENTS_ON: print(results)
 
     primaryKey = 69
-    results = db.query_table("CraterTable", primaryKey)
+    results = db.query_table("CraterTable", str(primaryKey))
     if GC.DEBUG_STATEMENTS_ON: print(results)
 
     """
