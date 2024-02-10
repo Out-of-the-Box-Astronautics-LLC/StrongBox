@@ -98,16 +98,27 @@ class MoonAutoPilot:
             Return False if crater center couldn't be determine, True otherwise
         """
         circleFound = False
+        ellipseFound = False
         centerDetermined = False
+        contours = None
+        circles = None
 
         # Starte image manipulatiom: Convert to grey scale image & apply GaussianBlur to reduce noise and improve detection
         grayScaleImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         grayScaleImageBlurred = cv2.GaussianBlur(grayScaleImage, (9, 9), 0)
 
         # Start looking for craters by location all circles in the image larger then 200 pixels (TODO m at TODO km altitude above the Moon) in diameter
-        circles = cv2.HoughCircles(grayScaleImageBlurred, cv2.HOUGH_GRADIENT, dp=1, minDist=200, param1=50, param2=30, minRadius=0, maxRadius=0)
+        # dp:        A larger value will give a rougher circle detection but will be faster. A value of 1 means the resolution is equal to the image resolution.
+        # minDist:   The minimum distance between the centers of detected circles. If the distance between the centers of two circles is less than this value, then the smaller of the two circles is removed. Increasing this value can help in reducing false positives by filtering out circles that are too close to each other.
+        # param1:    Edge detection in the Hough gradient method. It is the higher threshold of the two passed to the Canny edge detector.
+        # param2:    Accumulator threshold for the circle centers at the detection stage. A larger value means that a higher number of supporting points are required to detect a circle.
+        # minRadius: This parameter specifies the minimum radius of the circles to be detected. Circles with a radius smaller than this value will not be detected.
+        # maxRadius: This parameter specifies the maximum radius of the circles to be detected. Circles with a radius larger than this value will not be detected. If set to 0, it means there is no maximum limit.
+        circles = cv2.HoughCircles(grayScaleImageBlurred, cv2.HOUGH_GRADIENT, dp=1, minDist=100, param1=100, param2=30, minRadius=int(MoonAutoPilot.MIN_CRATER_PIXEL_DIAMETER/2), maxRadius=0)
 
         if circles is not None:
+            circleFound = True
+
             # Convert the circle parameters to integers
             circles = np.round(circles[0, :]).astype("int")
 
@@ -137,6 +148,8 @@ class MoonAutoPilot:
             contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
             if contours is not None:
+                ellipseFound = True
+
                 for contour in contours:
                     # Fit an ellipse to the contour
                     if len(contour) >= 5:  # Requires at least 5 points to fit an ellipse
@@ -166,20 +179,10 @@ class MoonAutoPilot:
                 self.craterDB.insert_debug_logging_table("No circles dectected, attempting to locate ellipse")
 
 
-        # If any ellipses or circles found
-        if contours or circles:
-            if circleDiameter > MoonAutoPilot.MIN_CRATER_PIXEL_DIAMETER:
-                craterFound = True
+        if circleFound or ellipseFound:
+            return True
 
-
-        if craterFound:
-            # TODO
-            centerDetermined = True
-
-        if (craterFound and centerDetermined):
-            return False
-
-        return True
+        return False
 
 
     def store_crater_grid_pattern(self, x: int, y: int) -> cr.Crater:
@@ -230,7 +233,7 @@ class MoonAutoPilot:
         test = MoonAutoPilot("AirPlant-1")
         images = ['NearSurveyor6_HeightUnknown.png']
         img = test.load_image(images[0], MoonAutoPilot.RGB_MODE)
-        #test.find_crater_centers(img)
+        test.find_crater_centers(img)
         test.show_image_for_debugging("Moon AutoPilot v0.1" , img)
 
 
