@@ -18,7 +18,7 @@
   "stubPath": "src/stubs",
   "reportMissingImports": true,
   "reportMissingTypeStubs": false,
-  "reportMissingModuleSource": true, // Added by Blaze
+  "reportMissingModuleSource": false, // Added by Blaze
   "pythonVersion": "3.9",
   "pythonPlatform": "Linux",
   "executionEnvironments": [
