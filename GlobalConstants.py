@@ -25,6 +25,8 @@ GRID_CONSTANT = TODO
 MAC_CODE_DIRECTORY   = '/Users/venus/GitRepos/StrongBox'
 LINUX_CODE_DIRECTORY = '/StrongBox'
 WINDOWS_CODE_DIRECTORY = 'D:/StrongBox'
+TEST_IMAGE = 'static/images/TestImageApollo16_1920x1080.jpeg'
 
 # GUI Display CONSTANTS
 DEBUG_STATEMENTS_ON = True
+STRONG_BOX_BLUE = '#000C26'    # RGB R=0, G=12, and B=38 https://www.rgbtohex.net
