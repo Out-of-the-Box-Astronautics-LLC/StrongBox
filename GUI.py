@@ -42,11 +42,17 @@ import Database as db           # SQLite database to store crate locations
 isDarkModeOn = False            # Application boots up in light mode
 darkMode = ui.dark_mode()
 
+def set_background(color: str) -> None:
+    ui.query('body').style(f'background-color: {color}')
 
 if __name__ in {"__main__", "__mp_main__"}:
     darkMode.disable()
 
     db1 = db.Database("GUI.db")
+
+    set_background(GC.STRONG_BOX_GREEN)
+    ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: set_background(GC.STRONG_BOX_GREEN))
+    #TODO FIND USE FOR SVG DRAWING UPDATE AT BOTTOM OF PAGE ui.timer(GC.CLOCK_UPDATE_TIME, lambda: clock.set_content(build_svg()))
 
     if __name__ == "__main__":
         # Outgoing API connection should only run once, on single port, in a single threaded main function
@@ -74,7 +80,7 @@ if __name__ in {"__main__", "__mp_main__"}:
 
 
     except KeyError:
-        db.insert_error_logging_table(GC.TODO, "ERROR: Could not find .ENV file")
+        db1.insert_debug_logging_table("ERROR: Could not find .ENV file")
 
     finally:
         url = config['TURSO_URL']
@@ -84,9 +90,15 @@ if __name__ in {"__main__", "__mp_main__"}:
 # NiceGUI code runing in "__mp_main__"
 ui.colors(primary=GC.STRONG_BOX_BLUE)
 
+
 # Eight HD 720p (1280 × 720) and/or 4K UHD (3840 × 2160) cameras on the corners of the A & B sides of a Strong Box cube in two 3 x 3 grids (for MVP. Mission code with stitch into two circles)
 imageWidth = 720
-frameRate = 60
+frameRate = 30
+lastFramesA = [GC.LAST_FRAMES+"A0.jpeg", GC.LAST_FRAMES+"A1.jpeg", GC.LAST_FRAMES+"A2.jpeg", GC.LAST_FRAMES+"A3.jpeg"]
+lastFramesB = [GC.LAST_FRAMES+"B0.jpeg", GC.LAST_FRAMES+"B1.jpeg", GC.LAST_FRAMES+"B2.jpeg", GC.LAST_FRAMES+"B3.jpeg"]
+currentFramesA = [GC.CURRENT_FRAMES+"A0.jpeg", GC.CURRENT_FRAMES+"A1.jpeg", GC.CURRENT_FRAMES+"A2.jpeg", GC.CURRENT_FRAMES+"A3.jpeg"]
+currentFramesB = [GC.CURRENT_FRAMES+"B0.jpeg", GC.CURRENT_FRAMES+"B1.jpeg", GC.CURRENT_FRAMES+"B2.jpeg", GC.CURRENT_FRAMES+"B3.jpeg"]
+
 with ui.grid(columns=3):
     ui.label("").style(f"width: {imageWidth}px;")
     ui.label("").style(f"width: {imageWidth}px;")

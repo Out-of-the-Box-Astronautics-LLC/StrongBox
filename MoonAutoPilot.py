@@ -18,7 +18,8 @@ __version__    = "0.0.1"
 # Disable Pyright (Zed IDE) linting messages that seem unuseful
 # https://pypi.org/project/pyright/
 # https://github.com/microsoft/pyright/blob/main/docs/getting-started.md
-# Using Command Line Interface (CLI): pyright --ignoreexternal MainApp.py
+# Using Command Line Interface (CLI): pyright MainApp.py
+# Update using "pip install --upgrade pyright" in CLI
 
 ## Standard Python libraries
 import sys                                      # Determine which OS this code is running on https://docs.python.org/3/library/sys.html
