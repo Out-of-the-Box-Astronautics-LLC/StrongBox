@@ -11,6 +11,8 @@ __version__    = "0.0.1"
 TODO = -1
 # Useful CONSTANTS for the Strong Box moon mission
 
+DEBUG_STATEMENTS_ON = True
+
 # Physical elements inside a Strong Box
 NUMBER_OF_ROCKET_ENGINES = 1
 NUMBER_OF_CAMERAS = 9
@@ -23,7 +25,7 @@ GRID_CONSTANT = TODO
 
 # Default file location for code
 MAC_CODE_DIRECTORY   = '/Users/venus/GitRepos/StrongBox'
-LINUX_CODE_DIRECTORY = '/StrongBox'
+LINUX_CODE_DIRECTORY = '/home/mercury/MoeBuild/StrongBox'
 WINDOWS_CODE_DIRECTORY = 'D:/StrongBox'
 TEST_IMAGE = 'static/images/TestImageApollo16_1920x1080.jpeg'
 LAST_FRAMES = 'static/images/LastFrame'
