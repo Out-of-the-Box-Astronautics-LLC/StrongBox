@@ -45,6 +45,20 @@ darkMode = ui.dark_mode()
 def set_background(color: str) -> None:
     ui.query('body').style(f'background-color: {color}')
 
+
+async def get_browser_window_size(windowID: int): # -> tuple:
+    """ Use Javascript to get the size of the current browser window NiceGUI is running in
+
+    Args:
+        TODO NEEDED? windowID (interger): Number from 0 to ? defining each Window
+    """
+    ui.run_javascript('console.log("WINDOW WIDTH = ", window.innerWidth')
+    ui.run_javascript('console.log("WINDOW HEIGHT = ", window.innerHeight')
+    #await ui.run_javascript(f'height = window.innerHeight', respond=False)
+
+    #if GC.DEBUG_STATEMENTS_ON: print(f"Browser Window is {width} px wide and {height} px tall")
+    #return (width, height)
+
 if __name__ in {"__main__", "__mp_main__"}:
     darkMode.disable()
 
@@ -52,6 +66,9 @@ if __name__ in {"__main__", "__mp_main__"}:
 
     set_background(GC.STRONG_BOX_GREEN)
     ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: set_background(GC.STRONG_BOX_GREEN))
+    with ui.row().classes("self-center"):
+        ui.button("RUN JAVASCRIPT", on_click=lambda e: get_browser_window_size(0))
+
     #TODO FIND USE FOR SVG DRAWING UPDATE AT BOTTOM OF PAGE ui.timer(GC.CLOCK_UPDATE_TIME, lambda: clock.set_content(build_svg()))
 
     if __name__ == "__main__":
@@ -94,12 +111,15 @@ ui.colors(primary=GC.STRONG_BOX_BLUE)
 # Eight HD 720p (1280 × 720) and/or 4K UHD (3840 × 2160) cameras on the corners of the A & B sides of a Strong Box cube in two 3 x 3 grids (for MVP. Mission code with stitch into two circles)
 imageWidth = 720
 frameRate = 30
+textFontSize = 50
+#TODO browserWindowWidth = ???
+#TODO if browserWindowWidth < (1080/2): textFontSize = int(textFontSize/2) 
 lastFramesA = [GC.LAST_FRAMES+"A0.jpeg", GC.LAST_FRAMES+"A1.jpeg", GC.LAST_FRAMES+"A2.jpeg", GC.LAST_FRAMES+"A3.jpeg"]
 lastFramesB = [GC.LAST_FRAMES+"B0.jpeg", GC.LAST_FRAMES+"B1.jpeg", GC.LAST_FRAMES+"B2.jpeg", GC.LAST_FRAMES+"B3.jpeg"]
 currentFramesA = [GC.CURRENT_FRAMES+"A0.jpeg", GC.CURRENT_FRAMES+"A1.jpeg", GC.CURRENT_FRAMES+"A2.jpeg", GC.CURRENT_FRAMES+"A3.jpeg"]
 currentFramesB = [GC.CURRENT_FRAMES+"B0.jpeg", GC.CURRENT_FRAMES+"B1.jpeg", GC.CURRENT_FRAMES+"B2.jpeg", GC.CURRENT_FRAMES+"B3.jpeg"]
 
-with ui.grid(columns=3):
+with ui.grid(columns=3).classes("self-center"):
     ui.label("").style(f"width: {imageWidth}px;")
     ui.label("").style(f"width: {imageWidth}px;")
     ui.label("").style(f"width: {imageWidth}px;")
@@ -109,14 +129,14 @@ with ui.grid(columns=3):
     blankImageCellInGrid = ui.image('')
 
     cameraA90image = ui.image(GC.TEST_IMAGE)
-    ui.label(f"SIDE A CAMERA'S: {frameRate} Hz").style(f"width: {imageWidth}px; font-size: 50px; display: flex; justify-content: center; align-items: center;")
+    ui.label(f"SIDE A CAMERA'S: {frameRate} Hz").style(f"width: {imageWidth}px; font-size: {textFontSize}px; display: flex; justify-content: center; align-items: center;")
     cameraA180image = ui.image(GC.TEST_IMAGE)
 
     blankImageCellInGrid = ui.image('')
     cameraA270image = ui.image(GC.TEST_IMAGE)
     blankImageCellInGrid = ui.image('')
 
-with ui.grid(columns=3):
+with ui.grid(columns=3).classes("self-center"):
     ui.label("").style(f"width: {imageWidth}px;")
     ui.label("").style(f"width: {imageWidth}px;")
     ui.label("").style(f"width: {imageWidth}px;")
@@ -126,7 +146,7 @@ with ui.grid(columns=3):
     blankImageCellInGrid = ui.image('')
 
     cameraB90image = ui.image(GC.TEST_IMAGE)
-    ui.label(f"SIDE B CAMERA'S: {frameRate} Hz").style(f"width: {imageWidth}px; font-size: 50px; display: flex; justify-content: center; align-items: center;")
+    ui.label(f"SIDE B CAMERA'S: {frameRate} Hz").style(f"width: {imageWidth}px; font-size: {textFontSize}px; display: flex; justify-content: center; align-items: center;")
     cameraB180image = ui.image(GC.TEST_IMAGE)
 
     blankImageCellInGrid = ui.image('')
