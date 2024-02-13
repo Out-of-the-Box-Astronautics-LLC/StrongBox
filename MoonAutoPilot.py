@@ -230,7 +230,7 @@ class MoonAutoPilot:
             if GC.DEBUG_STATEMENTS_ON: print(f"Closing debugging window: '{name}'")
 
 
-    def unit_test():
+    def unit_test(self):
         test = MoonAutoPilot("AirPlant-1")
         images = ['NearSurveyor6_HeightUnknown.png']
         img = test.load_image(images[0], MoonAutoPilot.RGB_MODE)
