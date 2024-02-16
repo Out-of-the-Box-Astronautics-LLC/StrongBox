@@ -38,36 +38,52 @@ import Crater as cr             # Crater class to define name, size, and locatio
 import Database as db           # SQLite database to store crate locations
 
 
-# Global Variables
-isDarkModeOn = False            # Application boots up in light mode
-darkMode = ui.dark_mode()
+## Global Variables
+# Application boots up in light mode
+isDarkModeOn = False
+darkMode  = ui.dark_mode()
+# Browser window pixel sizes
+winWidth  = -1
+winHeight = -1
+
+async def page_refresh():
+    set_background(GC.STRONG_BOX_GREEN)
+    await get_browser_window_size()
+
 
 def set_background(color: str) -> None:
     ui.query('body').style(f'background-color: {color}')
 
 
-async def get_browser_window_size(windowID: int): # -> tuple:
+async def get_browser_window_size() -> None:
     """ Use Javascript to get the size of the current browser window NiceGUI is running in
+        https://nicegui.io/documentation/run_javascript#run_javascript
 
     Args:
         TODO NEEDED? windowID (interger): Number from 0 to ? defining each Window
-    """
-    ui.run_javascript('console.log("WINDOW WIDTH = ", window.innerWidth')
-    ui.run_javascript('console.log("WINDOW HEIGHT = ", window.innerHeight')
-    #await ui.run_javascript(f'height = window.innerHeight', respond=False)
 
-    #if GC.DEBUG_STATEMENTS_ON: print(f"Browser Window is {width} px wide and {height} px tall")
-    #return (width, height)
+    Return(s):
+        Updates window width (winWidth) and window height (winHeight) global variable 
+    """
+    global winWidth
+    global winHeight
+    winWidth  = await ui.run_javascript('window.innerWidth')
+    winHeight = await ui.run_javascript('window.innerHeight')
+
+    if GC.DEBUG_STATEMENTS_ON: print(f"Browser Window is {winWidth} px wide and {winHeight} px tall")
+
 
 if __name__ in {"__main__", "__mp_main__"}:
     darkMode.disable()
 
     db1 = db.Database("GUI.db")
+    get_browser_window_size()
 
-    set_background(GC.STRONG_BOX_GREEN)
+    #ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: page_refresh())
     ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: set_background(GC.STRONG_BOX_GREEN))
     with ui.row().classes("self-center"):
-        ui.button("RUN JAVASCRIPT", on_click=lambda e: get_browser_window_size(0))
+        #ui.button("RUN JAVASCRIPT", on_click=lambda e: get_browser_window_size())
+        ui.button("RUN JAVASCRIPT", on_click=lambda e: page_refresh())
 
     #TODO FIND USE FOR SVG DRAWING UPDATE AT BOTTOM OF PAGE ui.timer(GC.CLOCK_UPDATE_TIME, lambda: clock.set_content(build_svg()))
 
@@ -99,6 +115,7 @@ if __name__ in {"__main__", "__mp_main__"}:
     except KeyError:
         db1.insert_debug_logging_table("ERROR: Could not find .ENV file")
 
+
     finally:
         url = config['TURSO_URL']
         key = config['TURSO_KEY']
@@ -112,12 +129,20 @@ ui.colors(primary=GC.STRONG_BOX_BLUE)
 imageWidth = 720
 frameRate = 30
 textFontSize = 50
-#TODO browserWindowWidth = ???
-#TODO if browserWindowWidth < (1080/2): textFontSize = int(textFontSize/2) 
+
+if winWidth < (1080/2):
+    textFontSize = 40
+if winWidth < (1080/4):
+    textFontSize = 30
+if GC.DEBUG_STATEMENTS_ON: print(f"Font size was set to: {textFontSize}")
+
 lastFramesA = [GC.LAST_FRAMES+"A0.jpeg", GC.LAST_FRAMES+"A1.jpeg", GC.LAST_FRAMES+"A2.jpeg", GC.LAST_FRAMES+"A3.jpeg"]
 lastFramesB = [GC.LAST_FRAMES+"B0.jpeg", GC.LAST_FRAMES+"B1.jpeg", GC.LAST_FRAMES+"B2.jpeg", GC.LAST_FRAMES+"B3.jpeg"]
 currentFramesA = [GC.CURRENT_FRAMES+"A0.jpeg", GC.CURRENT_FRAMES+"A1.jpeg", GC.CURRENT_FRAMES+"A2.jpeg", GC.CURRENT_FRAMES+"A3.jpeg"]
 currentFramesB = [GC.CURRENT_FRAMES+"B0.jpeg", GC.CURRENT_FRAMES+"B1.jpeg", GC.CURRENT_FRAMES+"B2.jpeg", GC.CURRENT_FRAMES+"B3.jpeg"]
+
+with ui.footer(value=True) as footer:
+    ui.label('Strong Box: Air Plant 1 Mission').style(f"font-size: 25px;")
 
 with ui.grid(columns=3).classes("self-center"):
     ui.label("").style(f"width: {imageWidth}px;")
@@ -153,7 +178,5 @@ with ui.grid(columns=3).classes("self-center"):
     cameraB270image = ui.image(GC.TEST_IMAGE)
     blankImageCellInGrid = ui.image('')
 
-with ui.footer(value=True) as footer:
-    ui.label('Strong Box: Air Plant 1 Mission').style(f"font-size: 25px;")
 
 ui.run()
