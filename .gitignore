@@ -4,3 +4,4 @@
 __pycache__
 OpenCV_Download_Build_Directory/
 diff.txt
+*.db
