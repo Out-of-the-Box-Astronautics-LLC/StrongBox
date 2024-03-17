@@ -13,11 +13,13 @@ Only human life has ventured to explore the Moon. Let’s bring new beauty and l
 
 ## More Rocket & Lander Info:
 Earth to Moon Trans-Lunar Injection (TLI) launch provider: [https://spacex.com](https://spacex.com) <br>
-Moon lander: [https://www.intuitivemachines.com/post/intuitive-machines-lunar-lander-encapsulated-and-scheduled-for-launch](https://www.intuitivemachines.com/post/intuitive-machines-lunar-lander-encapsulated-and-scheduled-for-launch) <br> <br>
+Moon lander: [https://www.intuitivemachines.com/post/intuitive-machines-lunar-lander-encapsulated-and-scheduled-for-launch](https://www.intuitivemachines.com/post/intuitive-machines-lunar-lander-encapsulated-and-scheduled-for-launch) with decent rate of ??? m/s at 1 km, suborbital trajectory speed of ?? m/s at 319 km, and orbital speed of ??? m/s at 320 km https://www.quora.com/How-fast-must-an-object-be-moving-to-orbit-the-moon-at-elevation-of-say-1-2-miles-above-surface <br> 
+Suicide burn rocket engine: [Sugar &  Potassium  Nitrite (KNO3)](https://www.youtube.com/watch?v=12fR9neVnS8) with deltaV of ??? <br>
+Cold Gas thruster deltaV: [https://digitalcommons.usu.edu/cgi/viewcontent.cgi?article=2111&context=smallsat](https://digitalcommons.usu.edu/cgi/viewcontent.cgi?article=2111&context=smallsat) <br> <br>
+
 
 ## More Camera Info
 https://www.eclipticenterprises.com/ <br>
-Joe like cameras
 
 ## More Plant Info:
 Lunar Lichen: <br>
