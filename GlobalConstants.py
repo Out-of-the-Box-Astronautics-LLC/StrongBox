@@ -19,7 +19,7 @@ NUMBER_OF_CAMERAS = 9
 
 # Mappping data CONSTANTS
 NULL_LOCATION = None
-MAX_X_GRID = 100,000,000
+MAX_X_GRID = 100_000_000
 MAX_Y_GRID = 2 * MAX_X_GRID
 GRID_TO_GPS_CONSTANT = 9999_999/MAX_X_GRID # GPS is 7 accurate to seven sig figs and thus seven 9's
 
