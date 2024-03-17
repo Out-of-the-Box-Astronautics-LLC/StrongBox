@@ -16,7 +16,7 @@ Earth to Moon Trans-Lunar Injection (TLI) launch provider: [https://spacex.com](
 Moon lander: [https://www.intuitivemachines.com/post/intuitive-machines-lunar-lander-encapsulated-and-scheduled-for-launch](https://www.intuitivemachines.com/post/intuitive-machines-lunar-lander-encapsulated-and-scheduled-for-launch) <br> <br>
 
 ## More Camera Info
-https://www.eclipticenterprises.com/
+https://www.eclipticenterprises.com/ <br>
 Joe like cameras
 
 ## More Plant Info:
