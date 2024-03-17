@@ -231,7 +231,6 @@ class MoonAutoPilot:
 
 
     def unit_test(self):
-        test = MoonAutoPilot("AirPlant-1")
         images = ['NearSurveyor6_HeightUnknown.png']
         img = test.load_image(images[0], MoonAutoPilot.RGB_MODE)
         test.find_crater_centers(img)
@@ -239,4 +238,5 @@ class MoonAutoPilot:
 
 
 if __name__ == "__main__":
-	MoonAutoPilot.unit_test()
+    test = MoonAutoPilot("AirPlant-1")
+    test.unit_test()
