@@ -40,3 +40,11 @@ STRONG_BOX_BLUE  = '#000F24'    # RGB R=0, G=15, and B=36 https://www.rgbtohex.n
 STRONG_BOX_GREEN = '#126A74'    # RGB R=18, G=106, and B=116 https://www.rgbtohex.net
 GUI_PAGE_REFRESH_RATE = 30      # Units are Hertz (Hz = 1 / seconds)
 CLOCK_UPDATE_TIME = 60          # Units are seconds
+
+# Kinematics Equation CONSTANTS
+# See https://physicscatalyst.com/calculators/physics/kinematics-calculator.php
+VF = 1
+VI = 2
+T  = 3
+DD = 4
+A  = 5
