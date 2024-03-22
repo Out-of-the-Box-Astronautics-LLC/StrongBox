@@ -11,7 +11,7 @@ __doc__        = "Calculate one of the unknown values of motion using 1 of 4 equ
 """
 
 ## Standard Library
-import math
+from math import pow, sqrt
 
 ## Internal Library
 import GlobalConstants as GC
@@ -41,12 +41,12 @@ class KinematicEquations:
 
             # TODO: What are the 5 combinations of arguments?
             if unknowns[GC.VF] and not (unknowns[GC.VI] or unknowns[GC.T] or unknowns[GC.DD] or unknowns[GC.A]):
-                vf_2 = math.pow(velocityInitial, 2) + (2 * acceleration * deltaDistance)
-                self.vf = math.pow(vf_2, 0.5)
+                vf_2 = pow(velocityInitial, 2) + (2 * acceleration * deltaDistance)
+                self.vf = pow(vf_2, 0.5)
 
             elif unknowns[GC.VI]:
-                vi_2 = math.pow(velocityFinal, 2) - (2 * acceleration * deltaDistance)
-                self.vi = math.pow(vi_2, 0.5)
+                vi_2 = pow(velocityFinal, 2) - (2 * acceleration * deltaDistance)
+                self.vi = sqrt(vi_2)
 
             elif unknowns[GC.T]:
                 t = GC.TODO
@@ -55,8 +55,8 @@ class KinematicEquations:
                 dd = GC.TODO
 
             elif unknowns[GC.A] and unknowns[GC.DD]:
-                self.a = (velocityFinal - velocityIntial) / time
-                self.dd = (velocityInitial * time) + (0.5 * acceleration * math.pow(time, 2))
+                self.a = (velocityFinal -velocityInitial ) / time
+                self.dd = (velocityInitial * time) + (0.5 * acceleration * pow(time, 2))
 
             else:
                 if GC.DEBUG_STATEMENTS_ON: print("WARNING: All arguments have valid known float values, nothing to calculate")
