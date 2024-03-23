@@ -74,7 +74,7 @@ class KinematicEquations:
                 print(f"Using {self.eq1} equation since initial velocity & delta distance are unknow")
                 self.vi = (deltaDistance - (2 * acceleration * pow(time, 2))) / time
 
-            elif (unknowns[GC.VI] and unknowns[GC.DD] and not (unknowns[GC.VF] or unknowns[GC.T] or unknowns[GC.A]):
+            elif (unknowns[GC.VI] and unknowns[GC.DD]) and not (unknowns[GC.VF] or unknowns[GC.T] or unknowns[GC.A]):
                 pass #TODO
 
             # Calculate Time
@@ -142,13 +142,23 @@ class KinematicEquations:
             https://physicscatalyst.com/calculators/physics/kinematics-calculator.php
             https://study.com/academy/lesson/kinematic-equations-list-calculating-motion.html
         """
-        deltaDistance = 122.0 - 11.0
-        answer1= KinematicEquations("?", 0.0, "?", 333.0, GC.G_EARTH)
+        deltaDistance = 111.0 - 0.0
+        answer1= KinematicEquations("?", 0.0, "?", 111.0, GC.G_EARTH)
         print(f"Vf = {answer1.vf} | Vi = {answer1.vi} | Time = {answer1.t} | Displacement = {answer1.dd} | Accel = {answer1.a}")
+
+        answer2 = KinematicEquations(44.69, 571.0, "?", 319_000.0, GC.G_MOON)
+        print(f"Vf = {answer2.vf} | Vi = {answer2.vi} | Time = {answer2.t} | Displacement = {answer2.dd} | Accel = {answer2.a}")
+
+        xVelocity = 5.03
+        yVelocity = 20.10
+        zVelocity = 22.56
+        velocityVector = sqrt(pow(xVelocity, 2) + pow(yVelocity, 2) + pow(zVelocity,2))
+        xAxis = KinematicEquations(xVelocity, 50.8, "?", 100, 0)
+        yAxis = KinematicEquations(yVelocity, 571.0, "?", -100_000, 0)
+        zAxis = KinematicEquations(zVelocity, 10.2, "?", 319_000.0, GC.G_MOON)
+        print(f"Vf = {zAxis.vf} | Vi = {zAxis.vi} | Time = {zAxis.t} | Displacement = {zAxis.dd} | Accel = {zAxis.a}")
 
 
 if __name__ == "__main__":
+    print("Running Unit Test in KinematicEquations.py")
     KinematicEquations.unit_test()
-#    answer2 = KinematicEquations("?", "?", "?", 111, 9.81)
-#    answer3 = KinematicEquations(44.69, 571.0, "?", "?", 1.62)
-#    test = KinematicEquations(44.69, 0, 2.9, 11, 9.81)
