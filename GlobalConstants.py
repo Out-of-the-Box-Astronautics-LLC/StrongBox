@@ -43,8 +43,10 @@ CLOCK_UPDATE_TIME = 60          # Units are seconds
 
 # Kinematics Equation CONSTANTS
 # See https://physicscatalyst.com/calculators/physics/kinematics-calculator.php
-VF = 1
-VI = 2
-T  = 3
-DD = 4
-A  = 5
+VF = 0
+VI = 1
+T  = 2
+DD = 3
+A  = 4
+G_EARTH = 9.81
+G_MOON  = 1.62

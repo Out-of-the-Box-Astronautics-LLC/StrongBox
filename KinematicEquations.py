@@ -7,11 +7,16 @@ __license__    = "MIT License"
 __status__     = "Development"
 __deprecated__ = "False"
 __version__    = "0.0.1"
-__doc__        = "Calculate one of the unknown values of motion using 1 of 4 equations"
+__doc__        = "Calculate unknown value(s) of motion using 5 kinematic equations"
 """
 
 ## Standard Library
-import math
+from math import pow, sqrt, pi
+
+## 3rd Party Libraries
+# TODO Robot arm inverse & forward kinematics
+# https://pypi.org/project/visual-kinematics/
+# from visual_kinematics.RobotTrajectory import *
 
 ## Internal Library
 import GlobalConstants as GC
@@ -24,9 +29,13 @@ class KinematicEquations:
 
         """
         unknowns = KinematicEquations.determineUnkwown(velocityFinal, velocityInitial, time, deltaDistance, acceleration)
-        print(f"Unknown arguments OUTSIDE function are ", unknowns)
 
         self.isValid = False
+        self.eq1 =  "dd = vi * t + (0.5 * a * t^2)"
+        self.eq2 =  "vf^2 = vi^2 + (2.0 * a * dd)"
+        self.eq3 =  "vf = vi + a *t"
+        self.eq4 =  "dd = vf * t - (0.5 * a * t^2)"
+        self.eq5 =  "dd = 0.5 * (vf + vi) * t"
 
         if sum(unknowns) > 2:
             if GC.DEBUG_STATEMENTS_ON: print("ERROR: Too many unknowns to calculate the answer")
@@ -40,23 +49,52 @@ class KinematicEquations:
             self.a  = acceleration
 
             # TODO: What are the 5 combinations of arguments?
-            if unknowns[GC.VF] and not (unknowns[GC.VI] or unknowns[GC.T] or unknowns[GC.DD] or unknowns[GC.A]):
-                vf_2 = math.pow(velocityInitial, 2) + (2 * acceleration * deltaDistance)
-                self.vf = math.pow(vf_2, 0.5)
 
-            elif unknowns[GC.VI]:
-                vi_2 = math.pow(velocityFinal, 2) - (2 * acceleration * deltaDistance)
-                self.vi = math.pow(vi_2, 0.5)
+            # Calculate Final Velocity in FOUR different ways
+            if (unknowns[GC.VF]) and not (unknowns[GC.VI] or unknowns[GC.T] or unknowns[GC.DD] or unknowns[GC.A]):
+                print(f"Using {self.eq4} equation since ONLY final velocity is unknown")
+                self.vf = (deltaDistance + (0.5 * acceleration * pow(time, 2))) / time
 
+            elif (unknowns[GC.VF] and unknowns[GC.T]) and not (unknowns[GC.VI] or unknowns[GC.DD] or unknowns[GC.A]):
+                print(f"Using {self.eq2} equation since final velocity & time are unknown")
+                vf_2 = pow(velocityInitial, 2) + (2 * acceleration * deltaDistance)
+                self.vf = sqrt(vf_2)
+
+            elif (unknowns[GC.VF] and unknowns[GC.DD]) and not (unknowns[GC.VI] or unknowns[GC.T] or unknowns[GC.A]):
+                print(f"Using {self.eq3} equation since final velocity & delta distance are unknow")
+                self.vf = velocityInitial + acceleration * time
+
+            elif (unknowns[GC.VF] and unknowns[GC.A]) and not (unknowns[GC.VI] or unknowns[GC.DD] or unknowns[GC.T]):
+                print(f"Using {self.eq5} equation since final velocity & acceleration  are unknow")
+                self.vf = ((2 * deltaDistance) / time) - velocityInitial
+
+
+            # Calculate Initial Velocity
+            elif (unknowns[GC.VI]) and not (unknowns[GC.VF] or unknowns[GC.DD] or unknowns[GC.T] or unknowns[GC.A]):
+                print(f"Using {self.eq1} equation since initial velocity & delta distance are unknow")
+                self.vi = (deltaDistance - (2 * acceleration * pow(time, 2))) / time
+
+            elif (unknowns[GC.VI] and unknowns[GC.DD] and not (unknowns[GC.VF] or unknowns[GC.T] or unknowns[GC.A]):
+                pass #TODO
+
+            # Calculate Time
             elif unknowns[GC.T]:
                 t = GC.TODO
 
-            elif unknowns[GC.DD]:
+            # Calculate Delta Distance
+            elif (unknowns[GC.DD]) and not(TODO):
                 dd = GC.TODO
 
+            elif (unknowns[GC.DD] and unknowns[GC.VF]) and not(TODO):
+                dd = GC.TODO
+
+            elif (unknowns[GC.DD] and unknowns[GC.A]) and not(TODO):
+                dd = GC.TODO
+
+            # Calculate Acceleration
             elif unknowns[GC.A] and unknowns[GC.DD]:
                 self.a = (velocityFinal - velocityIntial) / time
-                self.dd = (velocityInitial * time) + (0.5 * acceleration * math.pow(time, 2))
+                self.dd = (velocityInitial * time) + (0.5 * acceleration * pow(time, 2))
 
             else:
                 if GC.DEBUG_STATEMENTS_ON: print("WARNING: All arguments have valid known float values, nothing to calculate")
@@ -67,6 +105,7 @@ class KinematicEquations:
 
         """
         unknownArguments = [False, False, False, False, False]
+
 
         try:
             velocityFinal = float(vf)
@@ -93,6 +132,7 @@ class KinematicEquations:
         except ValueError:
             unknownArguments[GC.A] = True
 
+
         return unknownArguments
 
 
@@ -100,11 +140,15 @@ class KinematicEquations:
         """ Checked using the following online calculators
 
             https://physicscatalyst.com/calculators/physics/kinematics-calculator.php
+            https://study.com/academy/lesson/kinematic-equations-list-calculating-motion.html
         """
-        deltaDistance = 122 - 11
-        (vf, vi, t, dd, a) = KinematicEquations("?", 0, 2.9, deltaDistance, 9.81)
+        deltaDistance = 122.0 - 11.0
+        answer1= KinematicEquations("?", 0.0, "?", 333.0, GC.G_EARTH)
+        print(f"Vf = {answer1.vf} | Vi = {answer1.vi} | Time = {answer1.t} | Displacement = {answer1.dd} | Accel = {answer1.a}")
+
 
 if __name__ == "__main__":
-     test = KinematicEquations("?", "?", "?", 111, 9.81)
-     test = KinematicEquations(44.69, 571.0, "?", "?", 1.62)
+    KinematicEquations.unit_test()
+#    answer2 = KinematicEquations("?", "?", "?", 111, 9.81)
+#    answer3 = KinematicEquations(44.69, 571.0, "?", "?", 1.62)
 #    test = KinematicEquations(44.69, 0, 2.9, 11, 9.81)
