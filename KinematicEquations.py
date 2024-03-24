@@ -18,17 +18,38 @@ from math import pow, sqrt, pi
 # https://pypi.org/project/visual-kinematics/
 # from visual_kinematics.RobotTrajectory import *
 
-## Internal Library
+## Internally Developed Library
 import GlobalConstants as GC
 
 
 class KinematicEquations:
 
-    def __init__(self, velocityFinal, velocityInitial, time, deltaDistance, acceleration):
-        """
+    def __init__(self, velocityFinal: float, velocityInitial: float, time: float, deltaDistance: float, acceleration: float):
+        """ Constructor to initialize a KinematicEquations.py object
 
+        Arg(s):
+            self: Newly created KinematicEquations object
+            velocityFinal   (Float): A +/- scalar velocity of an item slower then 100 km/s
+            velocityInitial (Float): A +/- scalar velocity of an item slower than 100 km/s
+            time (Float): Positive time value less than 100,000,000 seconds
+            deltaDistance (Float): A +/- scalar displacement of an item less than 200,000,00 km
+            acceleration (Float): A +/- scalar change in velocity in units of meters per second per secnds, decceleration against gravity is negative
+
+        Instance Variable(s):
+           isValid (Boolean): Is the input list of arguments enough to solve the 5 equations?
+           eq1 (String): The 1st kinematic equation of motion solving for delta distance
+           eq2 (String): The 2nd kinematic equation of motion solving for final velocity
+           eq3 (String): The 3rd kinematic equation of motion solving for final velocity
+           eq4 (String): The 4th kinematic equation of motion solving for delta distance
+           eq5 (String): The 5th kinematic equation of motion solving for delta distance
+
+           vf (Float): Long term storage of the calculated value for final velocity
+           vi (Float): Long term storage of the calculated value for initial velocity
+           t  (Float): Long term storage of the calculated value for time
+           dd (Float): Long term storage of the calculated value for delta distance
+           a  (Float): Long term storage of the calculated value for acceleration
         """
-        unknowns = KinematicEquations.determineUnkwown(velocityFinal, velocityInitial, time, deltaDistance, acceleration)
+        unknowns = KinematicEquations.determine_unkwown(velocityFinal, velocityInitial, time, deltaDistance, acceleration)
 
         self.isValid = False
         self.eq1 =  "dd = vi * t + (0.5 * a * t^2)"
@@ -52,44 +73,49 @@ class KinematicEquations:
 
             # Calculate Final Velocity in FOUR different ways
             if (unknowns[GC.VF]) and not (unknowns[GC.VI] or unknowns[GC.T] or unknowns[GC.DD] or unknowns[GC.A]):
-                print(f"Using {self.eq4} equation since ONLY final velocity is unknown")
+                print(f"Using {self.eq4} equation since ONLY final velocity = {vf} is unknown")
                 self.vf = (deltaDistance + (0.5 * acceleration * pow(time, 2))) / time
 
             elif (unknowns[GC.VF] and unknowns[GC.T]) and not (unknowns[GC.VI] or unknowns[GC.DD] or unknowns[GC.A]):
-                print(f"Using {self.eq2} equation since final velocity & time are unknown")
+                print(f"Using {self.eq2} equation since final velocity = {vf} & time = {t} are unknown")
                 vf_2 = pow(velocityInitial, 2) + (2 * acceleration * deltaDistance)
                 self.vf = sqrt(vf_2)
 
             elif (unknowns[GC.VF] and unknowns[GC.DD]) and not (unknowns[GC.VI] or unknowns[GC.T] or unknowns[GC.A]):
-                print(f"Using {self.eq3} equation since final velocity & delta distance are unknow")
+                print(f"Using {self.eq3} equation since final velocity = {vf} & delta distance = {dd} are unknown")
                 self.vf = velocityInitial + acceleration * time
 
             elif (unknowns[GC.VF] and unknowns[GC.A]) and not (unknowns[GC.VI] or unknowns[GC.DD] or unknowns[GC.T]):
-                print(f"Using {self.eq5} equation since final velocity & acceleration  are unknow")
+                print(f"Using {self.eq5} equation since final velocity = {vf} & acceleration = {a} are unknown")
                 self.vf = ((2 * deltaDistance) / time) - velocityInitial
 
 
             # Calculate Initial Velocity
             elif (unknowns[GC.VI]) and not (unknowns[GC.VF] or unknowns[GC.DD] or unknowns[GC.T] or unknowns[GC.A]):
-                print(f"Using {self.eq1} equation since initial velocity & delta distance are unknow")
+                print(f"Using {self.eq1} equation since initial velocity = {vi} & delta distance = {dd} are unknown")
                 self.vi = (deltaDistance - (2 * acceleration * pow(time, 2))) / time
 
             elif (unknowns[GC.VI] and unknowns[GC.DD]) and not (unknowns[GC.VF] or unknowns[GC.T] or unknowns[GC.A]):
                 pass #TODO
 
+
             # Calculate Time
             elif unknowns[GC.T]:
                 t = GC.TODO
+
 
             # Calculate Delta Distance
             elif (unknowns[GC.DD]) and not(TODO):
                 dd = GC.TODO
 
+
             elif (unknowns[GC.DD] and unknowns[GC.VF]) and not(TODO):
                 dd = GC.TODO
 
+
             elif (unknowns[GC.DD] and unknowns[GC.A]) and not(TODO):
                 dd = GC.TODO
+
 
             # Calculate Acceleration
             elif unknowns[GC.A] and unknowns[GC.DD]:
@@ -100,9 +126,12 @@ class KinematicEquations:
                 if GC.DEBUG_STATEMENTS_ON: print("WARNING: All arguments have valid known float values, nothing to calculate")
 
 
-    def determineUnkwown(vf, vi, t, d, a):
-        """
+    def determine_unkwown(vf, vi, t, d, a):
+        """ Determine if input argument are valid float or interger numbers or a "?" string to be calculated
 
+        Arg(s):
+            vf (Float or String): If value is 
+            
         """
         unknownArguments = [False, False, False, False, False]
 
