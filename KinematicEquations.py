@@ -52,11 +52,11 @@ class KinematicEquations:
         unknowns = KinematicEquations.determine_unkwown(velocityFinal, velocityInitial, time, deltaDistance, acceleration)
 
         self.isValid = False
-        self.eq1 =  "dd = vi * t + (0.5 * a * t^2)"
-        self.eq2 =  "vf^2 = vi^2 + (2.0 * a * dd)"
-        self.eq3 =  "vf = vi + a *t"
-        self.eq4 =  "dd = vf * t - (0.5 * a * t^2)"
-        self.eq5 =  "dd = 0.5 * (vf + vi) * t"
+        self.eq1 = "dd = vi * t + (0.5 * a * t^2)"
+        self.eq2 = "vf^2 = vi^2 + (2.0 * a * dd)"
+        self.eq3 = "vf = vi + a *t"
+        self.eq4 = "dd = vf * t - (0.5 * a * t^2)"
+        self.eq5 = "dd = 0.5 * (vf + vi) * t"
 
         if sum(unknowns) > 2:
             if GC.DEBUG_STATEMENTS_ON: print("ERROR: Too many unknowns to calculate the answer")
@@ -65,12 +65,11 @@ class KinematicEquations:
             self.isValid = True
             self.vf = velocityFinal
             self.vi = velocityInitial
-            self.t  = time
+            self.t = time
             self.dd = deltaDistance
-            self.a  = acceleration
+            self.a = acceleration
 
             # TODO: What are the 5 combinations of arguments?
-
             # Calculate Final Velocity in FOUR different ways
             if (unknowns[GC.VF]) and not (unknowns[GC.VI] or unknowns[GC.T] or unknowns[GC.DD] or unknowns[GC.A]):
                 print(f"Using {self.eq4} equation since ONLY final velocity = {velocityFinal} is unknown")
@@ -89,14 +88,21 @@ class KinematicEquations:
                 print(f"Using {self.eq5} equation since final velocity = {self.vf} & acceleration = {a} are unknown")
                 self.vf = ((2 * deltaDistance) / time) - velocityInitial
 
-
-            # Calculate Initial Velocity
-            elif (unknowns[GC.VI]) and not (unknowns[GC.VF] or unknowns[GC.DD] or unknowns[GC.T] or unknowns[GC.A]):
-                print(f"Using {self.eq1} equation since initial velocity = {vi} & delta distance = {dd} are unknown")
-                self.vi = (deltaDistance - (2 * acceleration * pow(time, 2))) / time
-
             elif (unknowns[GC.VI] and unknowns[GC.DD]) and not (unknowns[GC.VF] or unknowns[GC.T] or unknowns[GC.A]):
-                pass #TODO
+                pass  #TODO
+
+
+            # Calculate Time
+            elif unknowns[GC.T]:
+                t = GC.TODO
+
+
+            # Calculate Delta Distance
+            elif (unknowns[GC.DD]) and not (TODO):
+                dd = GC.TODO
+
+            elif (unknowns[GC.DD] and unknowns[GC.VF]) and not (TODO):
+                dd = GC.TODO
 
 
             # Calculate Time
@@ -105,22 +111,9 @@ class KinematicEquations:
                 t = (sqrt(2 * acceleration * deltaDistance + pow(velocityInitial, 2)) - velocityInitial) / acceleration
 
 
-            # Calculate Delta Distance
-            elif (unknowns[GC.DD]) and not(TODO):
-                dd = GC.TODO
-
-
-            elif (unknowns[GC.DD] and unknowns[GC.VF]) and not(TODO):
-                dd = GC.TODO
-
-
-            elif (unknowns[GC.DD] and unknowns[GC.A]) and not(TODO):
-                dd = GC.TODO
-
-
             # Calculate Acceleration
             elif unknowns[GC.A] and unknowns[GC.DD]:
-                self.a = (velocityFinal - velocityIntial) / time
+                self.a = (velocityFinal - velocityInitial) / time
                 self.dd = (velocityInitial * time) + (0.5 * acceleration * pow(time, 2))
 
             else:
@@ -141,7 +134,6 @@ class KinematicEquations:
             List of Booleans values, based on if an argument is a float (False) or a string (True)
         """
         unknownArguments = [False, False, False, False, False]
-
 
         try:
             velocityFinal = float(vf)
@@ -168,11 +160,12 @@ class KinematicEquations:
         except ValueError:
             unknownArguments[GC.A] = True
 
-
         return unknownArguments
 
+
     def scalarize_vector(x: float, y: float, z: float):
-        """
+        """ Convert 3 dimension vector inside a magnitude without direction
+
         """
         scalarVelocity = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2))
 
@@ -186,7 +179,7 @@ class KinematicEquations:
             https://study.com/academy/lesson/kinematic-equations-list-calculating-motion.html
         """
         deltaDistance = 111.0 - 0.0
-        answer1= KinematicEquations("?", 0.0, "?", 111.0, GC.G_EARTH)
+        answer1 = KinematicEquations("?", 0.0, "?", 111.0, GC.G_EARTH)
         print(f"Vf = {answer1.vf} | Vi = {answer1.vi} | Time = {answer1.t} | Displacement = {answer1.dd} | Accel = {answer1.a}")
 
         answer2 = KinematicEquations(44.69, 571.0, "?", 319_000.0, GC.G_MOON)
