@@ -73,20 +73,20 @@ class KinematicEquations:
 
             # Calculate Final Velocity in FOUR different ways
             if (unknowns[GC.VF]) and not (unknowns[GC.VI] or unknowns[GC.T] or unknowns[GC.DD] or unknowns[GC.A]):
-                print(f"Using {self.eq4} equation since ONLY final velocity = {vf} is unknown")
+                print(f"Using {self.eq4} equation since ONLY final velocity = {velocityFinal} is unknown")
                 self.vf = (deltaDistance + (0.5 * acceleration * pow(time, 2))) / time
 
             elif (unknowns[GC.VF] and unknowns[GC.T]) and not (unknowns[GC.VI] or unknowns[GC.DD] or unknowns[GC.A]):
-                print(f"Using {self.eq2} equation since final velocity = {vf} & time = {t} are unknown")
+                print(f"Using {self.eq2} equation since final velocity = {velocityFinal} & time = {time} are unknown")
                 vf_2 = pow(velocityInitial, 2) + (2 * acceleration * deltaDistance)
                 self.vf = sqrt(vf_2)
 
             elif (unknowns[GC.VF] and unknowns[GC.DD]) and not (unknowns[GC.VI] or unknowns[GC.T] or unknowns[GC.A]):
-                print(f"Using {self.eq3} equation since final velocity = {vf} & delta distance = {dd} are unknown")
+                print(f"Using {self.eq3} equation since final velocity = {velocityFinal} & delta distance = {deltaDistance} are unknown")
                 self.vf = velocityInitial + acceleration * time
 
             elif (unknowns[GC.VF] and unknowns[GC.A]) and not (unknowns[GC.VI] or unknowns[GC.DD] or unknowns[GC.T]):
-                print(f"Using {self.eq5} equation since final velocity = {vf} & acceleration = {a} are unknown")
+                print(f"Using {self.eq5} equation since final velocity = {self.vf} & acceleration = {a} are unknown")
                 self.vf = ((2 * deltaDistance) / time) - velocityInitial
 
 
@@ -100,8 +100,9 @@ class KinematicEquations:
 
 
             # Calculate Time
-            elif unknowns[GC.T]:
-                t = GC.TODO
+            elif (unknowns[GC.T] and unknowns[GC.VF]) and not (unknowns[GC.VI] or unknowns[GC.DD] or unknowns[GC.A] or self.acceleration == 0):
+                print(f"Using {self.eq1} equation since ONLY time = {t} is unknown and acceleration does NOT equal 0")
+                t = (sqrt(2 * acceleration * deltaDistance + pow(velocityInitial, 2)) - velocityInitial) / acceleration
 
 
             # Calculate Delta Distance
@@ -127,11 +128,17 @@ class KinematicEquations:
 
 
     def determine_unkwown(vf, vi, t, d, a):
-        """ Determine if input argument are valid float or interger numbers or a "?" string to be calculated
+        """ Determine if input arguments are valid float or interger numbers or a "?" string to be calculated
 
         Arg(s):
-            vf (Float or String): If value is 
-            
+            vf (Float or String):
+            vi (Float or String):
+            t  (Float or String):
+            d  (Float or String):
+            a  (Float or String):
+
+        Returns:
+            List of Booleans values, based on if an argument is a float (False) or a string (True)
         """
         unknownArguments = [False, False, False, False, False]
 
@@ -164,6 +171,13 @@ class KinematicEquations:
 
         return unknownArguments
 
+    def scalarize_vector(x: float, y: float, z: float):
+        """
+        """
+        scalarVelocity = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2))
+
+        return scalarVelocity
+
 
     def unit_test():
         """ Checked using the following online calculators
@@ -181,11 +195,16 @@ class KinematicEquations:
         xVelocity = 5.03
         yVelocity = 20.10
         zVelocity = 22.56
-        velocityVector = sqrt(pow(xVelocity, 2) + pow(yVelocity, 2) + pow(zVelocity,2))
+        scalarInput = KinematicEquations.scalarize_vector(xVelocity, yVelocity, zVelocity)
+        print(f"Initial Velocity: {scalarInput} m/s = [{xVelocity}, {yVelocity}, {zVelocity}]")
         xAxis = KinematicEquations(xVelocity, 50.8, "?", 100, 0)
         yAxis = KinematicEquations(yVelocity, 571.0, "?", -100_000, 0)
         zAxis = KinematicEquations(zVelocity, 10.2, "?", 319_000.0, GC.G_MOON)
-        print(f"Vf = {zAxis.vf} | Vi = {zAxis.vi} | Time = {zAxis.t} | Displacement = {zAxis.dd} | Accel = {zAxis.a}")
+        print(f"Vfx = {xAxis.vf} | Vix = {xAxis.vi} | Time = {xAxis.t} | X-Axis Displacement = {xAxis.dd} | X-Axis Accel = {xAxis.a}")
+        print(f"Vfy = {yAxis.vf} | Viy = {yAxis.vi} | Time = {yAxis.t} | Y-Axis Displacement = {yAxis.dd} | Y-Axis Accel = {yAxis.a}")
+        print(f"Vfz = {zAxis.vf} | Viz = {zAxis.vi} | Time = {zAxis.t} | Z-Axis Displacement = {zAxis.dd} | Z-Axis Accel = {zAxis.a}")
+        scalarOutput = KinematicEquations.scalarize_vector(xAxis.vf, yAxis.vf, zAxis.vf)
+        print(f"Final Velocity: {scalarOutput} m/s = [{xAxis.vf}, {yAxis.vf}, {zAxis.vf}]")
 
 
 if __name__ == "__main__":
