@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
 """
 __authors__    = ["Blaze Sanders"]
-__contact__    = "blazes@mfc.us"
+__contact__    = "info@strongbox.space"
 __copyright__  = "Copyright 2024"
 __license__    = "MIT License"
 __status__     = "Development"

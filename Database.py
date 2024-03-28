@@ -25,18 +25,19 @@ from typing import Optional                     # TODO Give function argument an
 
 ## 3rd party libraries
 import pytz 					                # World Timezone Definitions  https://pypi.org/project/pytz/
-from pytz import timezone                       # Sync data write time to database no matter where server is located https://pypi.org/project/pytz/
+from pytz import timezone                       # Sync data write time to database no matter where server is located https://pypi.org/project/pytz
+#TODO Turo SQLite to
 
-## Internally developed modules
+## Internally developed code base
 import GlobalConstants as GC
 
 
 class Database:
 
-    ONE_MOON_DAY = 28.5 # TODO exactly 28.5? Units are days
-    ONE_MOON_ORBIT_AROUND_EARTH = ONE_MOON_DAY
+    ONE_MOON_DAY = 28.5                         # TODO Exactly 28.5? Units are days
+    ONE_MOON_ORBIT_AROUND_EARTH = ONE_MOON_DAY  # TODO Are they exactly the same?
 
-    """ Store non-Personally Identifiable Information in SQLite database
+    """ Store non-Personally Identifiable Information in a SQLite database
     """
 
     def __init__(self, filename: str = 'test.db'):
@@ -127,6 +128,7 @@ class Database:
 
         return now
 
+
     def insert_crater(self, latitude: float, longitude: float):
         pass
 
@@ -213,13 +215,17 @@ class Database:
         self.commit_changes()
 
 
-    def get_daily_sensor_data(self, date: str) -> tuple:
+    def get_daily_sensor_data(self, sensorId: int, date: str) -> tuple:
+        """
+        """
         return GC.TODO, GC.TODO, GC.TODO
 
 
 
-    def get_weekly_sensor_data(self, date: str):
-            pass
+    def get_weekly_sensor_data(self, sensorId: int, date: str):
+        """
+        """
+        return GC.TODO
 
 
     def query_table(self, tableName: str, searchTerm: Optional[str] = None, row: Optional[int]= None, column: Optional[int]= None) -> tuple:
@@ -276,6 +282,7 @@ class Database:
 
         # Final code path
         return None, None, False
+
 
     def export_table_to_csv(self, tableNames: list):
         """ Creates a filename assuming that the date that this code runs is a Monday
@@ -359,7 +366,7 @@ if __name__ == "__main__":
 
     oxygenLevel = 0             # Units are milliBar Plants have not started converting CO2 to O2
     carbonMonoxideLevel = 7     # Units are milliBar (Mars atomsphereic pressure is 7 milliBar on average
-    powerDraw = 0                # Units are watt-Hours
+    powerDraw = 0               # Units are watt-Hours
     missionStartHour = 1600     # Units of 24-hour clock, so 4 pm
     db.insert_day_graph_table(oxygenLevel, carbonMonoxideLevel, powerDraw, missionStartHour)
 
