@@ -8,7 +8,7 @@ __status__     = "Development"
 __deprecated__ = "False"
 __version__    = "0.0.1"
 """
-# Analyze the size and location of Moon craters to navigate down to the surface https://wms.lroc.asu.edu/lroc
+# Analyze the size and location of Moon craters, the black sky, and sun location to navigate down to the surface of the Earths Moon https://wms.lroc.asu.edu/lroc
 
 # Disable PyLint (VSCode) linting messages that seem unuseful
 # https://pypi.org/project/pylint/
@@ -51,7 +51,7 @@ class MoonAutoPilot:
 
 
     def __init__(self, name: str):
-        """ MoonAutoPilot constructor
+        """ Constructor to initialize a MoonAutoPilot.py object
 
             https://twitter.com/erdayastronaut/status/1433640020288618497?s=61&t=eS1giEUgStrI7lLV1Klx5Q
 
@@ -69,6 +69,39 @@ class MoonAutoPilot:
         self.flameyEndDown = False              # https://xkcd.com/1133 and https://imgs.xkcd.com/comics/up_goer_five.png
 
         self.craterDB = db.Database("MoonCraterPositions.db")   # SQLite database to store all live updating crater position
+        self.image_uri = None                   # Filepath for images saved to SSD, set 
+        self.video_uri = None                   #TODO
+
+
+    def set_media_uris(self, devMode: bool):
+        """ Set the full filepath URI's for images and videos depending on OS code is running on
+
+        Arg(s):
+            devMode (Boolean): Is code runnning on a development platform on Earth? Otherwise if in space devMode = False
+        """
+        # Create URI for local storage of media (images & videos)
+        if sys.platform.startswith('darwin'):
+            self.image_uri = GC.DEV_MAC_CODE_DIRECTORY + 'static/images/'
+            self.video_uri = GC.DEV_MAC_CODE_DIRECTORY + 'static/videos/'
+
+        elif sys.platform.startswith('linux'):
+            if devMode:
+                self.image_uri = GC.DEV_LINUX_CODE_DIRECTORY + 'static/images/'
+                self.video_uri = GC.DEV_LINUX_CODE_DIRECTORY + 'static/videos/'
+
+            else:
+                # TODO Check for REMOVE BEFORE FLIGH pin removal?
+                self.image_uri = GC.FLIGHT_HARDWARE_CODE_DIRECTORY + 'static/images/'
+                self.video_uri = GC.FLIGHT_HARDWARE_CODE_DIRECTORY + 'static/videos/'
+
+        elif sys.platform.startswith('win'):
+            print("WARNING: Running MoonAutoPilot.py code on Windows OS is NOT fully supported")
+            self.image_uri = GC.DEV_WINDOWS_CODE_DIRECTORY + 'static/images/'
+            self.video_uri = GC.DEV_WINDOWS_CODE_DIRECTORY + 'static/videos/'
+
+        else:
+            print("ERROR: Running on an unknown operating system")
+            quit()
 
 
     def load_image(self, filename: str, mode: int):
@@ -85,7 +118,7 @@ class MoonAutoPilot:
         if filenameParts[1].upper() != "PNG" and filenameParts[1].upper() != "JPEG":
           return None
 
-        filepath = "images/" + filename
+        filepath = self.image_uri + filename
         if GC.DEBUG_STATEMENTS_ON: print(f"Using image at filepath '{filepath}'")
 
         img = cv2.imread(filepath, mode)
@@ -233,10 +266,12 @@ class MoonAutoPilot:
     def unit_test(self):
         images = ['NearSurveyor6_HeightUnknown.png']
         img = test.load_image(images[0], MoonAutoPilot.RGB_MODE)
+        #TODO Fix runtime error   
         test.find_crater_centers(img)
         test.show_image_for_debugging("Moon AutoPilot v0.1" , img)
 
 
 if __name__ == "__main__":
     test = MoonAutoPilot("AirPlant-1")
+    test.set_media_uris(True)
     test.unit_test()

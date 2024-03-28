@@ -1,0 +1,11 @@
+2024-03-27-1130 CT
+
+60 W per Nvidia AGX Nano  x 2
+50 W for 10 4K cameras
+10 W for control board
+
+10 W for CO2 valve relays
+= 190 Watts total
+
+
+12U at the smallest

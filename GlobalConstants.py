@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 __authors__    = ["Blaze Sanders"]
-__contact__    = "blazes@mfc.us"
-__copyright__  = "Copyright 2023"
+__contact__    = "info@strongbox.space"
+__copyright__  = "Copyright 2024"
 __license__    = "MIT License"
 __status__     = "Development"
 __deprecated__ = "False"
@@ -15,7 +15,7 @@ DEBUG_STATEMENTS_ON = True
 
 # Physical elements inside a Strong Box
 NUMBER_OF_ROCKET_ENGINES = 1
-NUMBER_OF_CAMERAS = 9
+NUMBER_OF_CAMERAS = 10
 
 # Mappping data CONSTANTS
 NULL_LOCATION = None
@@ -26,10 +26,12 @@ GRID_TO_GPS_CONSTANT = 9999_999/MAX_X_GRID # GPS is 7 accurate to seven sig figs
 # SQLite Database CONSTANTS
 # TODO
 
-# Default file location for code
-MAC_CODE_DIRECTORY   = '/Users/venus/GitRepos/StrongBox'
-LINUX_CODE_DIRECTORY = '/home/mercury/MoeBuild/StrongBox'
-WINDOWS_CODE_DIRECTORY = 'D:/StrongBox'
+# Location of the code base on your local development PC / Mac and flight hardware (NVIDIA AGX ORION NANO)
+# The username for mission software is ootba = Out of the Box Astronautics LLC
+DEV_MAC_CODE_DIRECTORY   = '/Users/mercury/GitRepos/StrongBox/'
+DEV_LINUX_CODE_DIRECTORY = '/home/kb3tyv/GitRepos/StrongBox/'
+DEV_WINDOWS_CODE_DIRECTORY = 'C:/Users/neptune/Desktop/GitRepos/StrongBox/'
+FLIGHT_HARDWARE_CODE_DIRECTORY = '/home/ootba/StrongBox/'
 TEST_IMAGE = 'static/images/TestImageApollo16_1920x1080.jpeg'
 LAST_FRAMES = 'static/images/LastFrame'
 CURRENT_FRAMES = 'static/images/CurrentFrame'
@@ -41,7 +43,7 @@ STRONG_BOX_GREEN = '#126A74'    # RGB R=18, G=106, and B=116 https://www.rgbtohe
 GUI_PAGE_REFRESH_RATE = 30      # Units are Hertz (Hz = 1 / seconds)
 CLOCK_UPDATE_TIME = 60          # Units are seconds
 
-# Kinematics Equation CONSTANTS
+# Kinematic Equations CONSTANTS
 # See https://physicscatalyst.com/calculators/physics/kinematics-calculator.php
 VF = 0
 VI = 1
