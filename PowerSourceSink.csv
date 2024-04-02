@@ -1,0 +1,4 @@
+partId, isPowerSource, minWattage, maxWattage, currentVoltage, currentAmpDraw
+301-00001-A, False, 5.00, 60.0, 11.6, 5.69
+301-00002-A, False, 1.00,  5.0, 4.9, 1.01
+302-00001-A,  True,  120,  750, 48.0, 20.0 

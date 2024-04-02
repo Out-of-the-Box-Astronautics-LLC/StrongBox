@@ -35,6 +35,7 @@ FLIGHT_HARDWARE_CODE_DIRECTORY = '/home/ootba/StrongBox/'
 TEST_IMAGE = 'static/images/TestImageApollo16_1920x1080.jpeg'
 LAST_FRAMES = 'static/images/LastFrame'
 CURRENT_FRAMES = 'static/images/CurrentFrame'
+CSV_POWER_PARTS = 'PowerSourceSink.csv'
 
 # GUI Display CONSTANTS
 DEBUG_STATEMENTS_ON = True
