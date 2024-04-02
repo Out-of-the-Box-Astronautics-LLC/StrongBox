@@ -42,3 +42,4 @@ TODO
 [Under Construction Strong Box Project Website](https://strongbox65.wordpress.com) <br> <br>
 https://www.tripoli.org/content.aspx?page_id=0&club_id=795696
 https://www.tripolivegas.com/
+https://systelusa.com/products/kite-strike-ii/
