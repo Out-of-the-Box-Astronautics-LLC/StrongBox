@@ -45,3 +45,4 @@ https://www.tripoli.org/content.aspx?page_id=0&club_id=795696
 https://www.tripolivegas.com/
 https://systelusa.com/products/kite-strike-ii/
 https://wp.me/PfFjRT-2
+https://chat.openai.com/share/eca96014-fcd5-40b3-ad37-cfa0d428fd84
