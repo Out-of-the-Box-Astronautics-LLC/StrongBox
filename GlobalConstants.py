@@ -16,6 +16,7 @@ DEBUG_STATEMENTS_ON = True
 # Physical elements inside a Strong Box
 NUMBER_OF_ROCKET_ENGINES = 1
 NUMBER_OF_CAMERAS = 10
+NUMBER_OF_CPUS = 2
 
 # Mappping data CONSTANTS
 NULL_LOCATION = None
