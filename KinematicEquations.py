@@ -172,6 +172,27 @@ class KinematicEquations:
         return scalarVelocity
 
 
+    def calculate_potential_energy(mass: float, gravity: float, height: float):
+        """ Calculate the potential energy (PE) an item has
+        
+        Arg(s):
+            mass (Float): Mass in kilograms
+            gravity (Float): Acceleration dur to gravity in meters per seconds per second
+            height (Float): Scalar distance in meters above a reference point
+        """
+        return (mass * gravity * height) 
+
+
+    def calculate_kinetic_energy(mass: float, velocity: float):
+        """ Calculate the kinetic energy (KE) an item has
+        
+        Arg(s):
+            mass (Float): Mass in kilograms
+            velocity (Float): Scalar velocity in meters per second
+        """
+        return (0.5 * mass * velocity * velocity) 
+
+    
     def unit_test():
         """ Checked using the following online calculators
 
