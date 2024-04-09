@@ -15,12 +15,19 @@ from math import pow, sqrt, pi  # Power (2^2), Squareroot (4^0.5), and Pi (3.141
 import csv                      # Import csv file to define power sources and sinks
 
 ## 3rd Party Libraries
-# Sense Flex Power Measurement Sensor
-# https://sense.com/buy
+# Sense Flex Power Measurement Sensor from https://sense.com/buy
+# Unofficial API for the Sense Energy Monitor
+# https://github.com/scottbonline/sense
 from sense_energy import Senseable
 
+# Load environment variables for usernames, passwords, & API keys
+# Used to login into Sense API
+# https://pypi.org/project/python-dotenv/
+from dotenv import dotenv_values
+
 ## Internally Developed Library
-import GlobalConstants as GC
+import GlobalConstants as GC                # Useful global constants used across multiple files
+from Database import Database               # Store non-Personally Identifiable Information in local (TODO Turso server) SQlite database
 
 
 class Power:
@@ -36,6 +43,10 @@ class Power:
             minWattage (Float): Theoretical max instant power a part can draw in units of Watts
             currentVoltage (Float): Exact input voltage going into a part at any instant in time in units of Volts (V)
             currentAmpDraw (Float): Exact input current going into a part at any instant in time in units of Amps (A)
+
+        Instance Variable(s):
+            senseAPI (Senseable Object): Authenticate and collect realtime data from unoffical sene_energy API
+
         """
         self.id = partId
         self.isSource = isPowerSource
@@ -44,12 +55,33 @@ class Power:
         self.volts = currentVoltage
         self.amps = currentAmpDraw
 
+        self.senseAPI = Senseable()
+
+        self.db = Database('Power.db')
 
     def __repr__(self):
         """ Object "Representation" of Power.py Class (https://www.geeksforgeeks.org/python-__repr__-magic-method)
         """
         return f"Current class variable are: Power(Part ID = '{self.id}', Is part a power source? = {self.isSource}, " \
 	       f"Min Power Draw = {self.minWatts}, Max Power Draw = {self.maxWatts}, Current Volts = {self.volts}, Current Amp Draw = {self.amps})"
+
+
+    def store_data(self, minWattage: float, measuredPowerDraw: float, maxWattage: float, dateAndTimeStamp: str):
+        """ Store the key sensor readings and date / time into a SQlite database file
+
+        Arg(s):
+            minWattage (Float): Theoretical min power usage, nominally this should be close to 0 Watts
+            measuredPowerDraw (Float): Sensor measured power usage (Power = Volts * Amps) in units of Watts
+            maxWattage (Float): Theoretical max power usage, nominally this should be greater then measuredPowerDraw
+            dateAndTimeStamp (String): The date and time in ISO-8601 format (e.g. 2024-04-07T06:49:22+0000)
+
+        Returns:
+            Integer: -1 if database insert failed; otherwise, a value of 1 or greater is expected (1-based indicies)
+
+        """
+        isInsertSuccessful = self.db.insert_day_graph_table(oxygenLevel, carbonDioxideLevel, currentPowerDraw, dateAndTimeStamp)
+
+        return isInsertSuccessful
 
 
     def load_csv(filepath: str) -> list:
