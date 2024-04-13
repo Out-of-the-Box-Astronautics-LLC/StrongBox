@@ -24,7 +24,7 @@ Figure 1 - [OnShape 3D Model](https://cad.onshape.com/documents/cacba11fc1121841
 <br> <br>
 # MORE INFO:
 ## Rockets:
-1) Earth to Moon Trans-Lunar Injection (TLI) launch provider via $5M Falcon 9 or $200K StarShip via (SpaceX)[https://spacex.com](https://spacex.com) <br> <br>
+1) Earth to Moon Trans-Lunar Injection (TLI) launch provider via $5M Falcon 9 or $200K StarShip via [SpaceX](https://spacex.com) <br> <br>
 
 ## Landers:
 1) [Intuitive Machines Lander](https://www.intuitivemachines.com/post/intuitive-machines-lunar-lander-encapsulated-and-scheduled-for-launch) with decent rate of less than 250.0 m/s at 1 km, suborbital trajectory speed of 575.0 m/s or less at 319.0 km, and orbital speed of 1544 m/s at 320.0 km (See math [HERE](https://www.satsig.net/orbit-research/orbit-height-and-speed.htm))
