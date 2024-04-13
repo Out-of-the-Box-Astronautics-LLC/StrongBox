@@ -24,15 +24,16 @@ Figure 1 - [OnShape 3D Model](https://cad.onshape.com/documents/cacba11fc1121841
 <br> <br>
 # MORE INFO:
 ## Rockets:
-1) Earth to Moon Trans-Lunar Injection (TLI) launch provider: [https://spacex.com](https://spacex.com) <br> <br>
+1) Earth to Moon Trans-Lunar Injection (TLI) launch provider via $5M Falcon 9 or $200K StarShip via (SpaceX)[https://spacex.com](https://spacex.com) <br> <br>
 
 ## Landers:
 1) [Intuitive Machines Lander](https://www.intuitivemachines.com/post/intuitive-machines-lunar-lander-encapsulated-and-scheduled-for-launch) with decent rate of less than 250.0 m/s at 1 km, suborbital trajectory speed of 575.0 m/s or less at 319.0 km, and orbital speed of 1544 m/s at 320.0 km (See math [HERE](https://www.satsig.net/orbit-research/orbit-height-and-speed.htm))
 2) [Astro Lab Moon Rover / Lander](https://astrolab-images.s3.amazonaws.com/pdf_files/Payload_Interface_Guide.pdf) with TBD <br> <br>
 
 ## Cameras:
-1) https://www.eclipticenterprises.com/ <br>
-2) https://www.3dxtech.com/tech-data-sheets-safety-data-sheets/ <br> <br>
+1) PRIMARY CAMERA: E-Conn Sony IMX568 TBD LINK
+2) Ultem 1010 Camera Enclosures for Sony IMX568 above (3DX Tech 3D printing filament)[https://www.3dxtech.com/tech-data-sheets-safety-data-sheets/]
+3) BACKUP CAMERA: https://www.eclipticenterprises.com/ <br> <br>
 
 ## Plants:
 Lunar Lichen: <br>
