@@ -26,9 +26,10 @@ Figure 1 - [OnShape 3D Model](https://cad.onshape.com/documents/cacba11fc1121841
 ## Rockets:
 1) Earth to Moon Trans-Lunar Injection (TLI) launch provider via $5M Falcon 9 or $200K StarShip via [SpaceX](https://spacex.com) <br> <br>
 
-## Landers:
+## Landers / Orbiters:
 1) [Intuitive Machines Lander](https://www.intuitivemachines.com/post/intuitive-machines-lunar-lander-encapsulated-and-scheduled-for-launch) with decent rate of less than 250.0 m/s at 1 km, suborbital trajectory speed of 575.0 m/s or less at 319.0 km, and orbital speed of 1544 m/s at 320.0 km (See math [HERE](https://www.satsig.net/orbit-research/orbit-height-and-speed.htm))
-2) [Astro Lab Moon Rover / Lander](https://astrolab-images.s3.amazonaws.com/pdf_files/Payload_Interface_Guide.pdf) with TBD <br> <br>
+2) [Astro Lab Moon Rover](https://astrolab-images.s3.amazonaws.com/pdf_files/Payload_Interface_Guide.pdf) with direct surface placement, with electrical power and RF data transfer support.
+3) Blue Origin [Blue Ring](https://www.blueorigin.com/blue-ring) drop off in Low Lunar Orbit (LLO) below 100 km (62 mi) at 1633 m/s <br> <br>
 
 ## Cameras:
 1) PRIMARY CAMERA: E-Conn Sony IMX568 TBD LINK
