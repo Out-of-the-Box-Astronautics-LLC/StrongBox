@@ -30,7 +30,7 @@ GRID_TO_GPS_CONSTANT = 9999_999/MAX_X_GRID # GPS is 7 accurate to seven sig figs
 # Location of the code base on your local development PC / Mac and flight hardware (NVIDIA AGX ORION NANO)
 # The username for mission software is ootba = Out of the Box Astronautics LLC
 DEV_MAC_CODE_DIRECTORY   = '/Users/mercury/GitRepos/StrongBox/'
-DEV_LINUX_CODE_DIRECTORY = '/home/kb3tyv/GitRepos/StrongBox/'
+DEV_LINUX_CODE_DIRECTORY = '/home/apollo-linux/GitRepos/StrongBox/'
 DEV_WINDOWS_CODE_DIRECTORY = 'C:/Users/neptune/Desktop/GitRepos/StrongBox/'
 FLIGHT_HARDWARE_CODE_DIRECTORY = '/home/ootba/StrongBox/'
 TEST_IMAGE = 'static/images/TestImageApollo16_1920x1080.jpeg'

@@ -266,7 +266,7 @@ class MoonAutoPilot:
     def unit_test(self):
         images = ['NearSurveyor6_HeightUnknown.png']
         img = test.load_image(images[0], MoonAutoPilot.RGB_MODE)
-        #TODO Fix runtime error   
+        #TODO Fix runtime error
         test.find_crater_centers(img)
         test.show_image_for_debugging("Moon AutoPilot v0.1" , img)
 

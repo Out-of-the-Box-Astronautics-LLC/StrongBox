@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
 """
 __authors__    = ["Blaze Sanders", "Vladyslav Haverdovskyi"]
 __contact__    = "blazes@mfc.us"
@@ -22,7 +22,7 @@ from time import sleep                          # Pause program execution
 import os                                       # Get filename information like enviroment variables, directory names, and full file paths
 import csv                                      # Manipulate .CSV files for data reporting
 import json                                     # Use to serialize a list of list and insert into TEXT column of SQLite database
-from typing import Optional                     # TODO Give function argument an optional
+from typing import Optional                     # TODO Give all function arguments an optional types
 
 
 ## 3rd party libraries
@@ -47,8 +47,10 @@ import GlobalConstants as GC
 
 class Database:
 
-    ONE_MOON_DAY = 28.5                         # TODO Exactly 28.5? Units are days
-    ONE_MOON_ORBIT_AROUND_EARTH = ONE_MOON_DAY  # TODO Are they exactly the same?
+    # The Moons synodic orbital period is exactly equal to lunar day (Sidereal orbital period is 27 days, 7 hours, 43 mins, and 11.5 seconds)
+    ONE_MOON_DAY = 708.7                        # Units are hours (29.53 Earth days = 708.7 Earth hours)
+    ONE_MOON_ORBIT_AROUND_EARTH = ONE_MOON_DAY
+
 
     def __init__(self, filename: str = 'test.db', isOnline: bool = False):
         """ Constructor to initialize an Database object
@@ -71,17 +73,17 @@ class Database:
             self.cursor = self.conn.cursor()
             self.dbOnline = False
 
+
             #TODO REMOVE IF NEW LOCAL METHOD ABOVE WORKS???
             # Connect to the local database (create if it doesn't exist)
             #self.conn = sqlite3.connect(filename)
             #self.cursor = self.conn.cursor()
 
-            """
             # Create ?TODO? tables in .db file for collecting Moon data
-            self.cursor.execute('''CREATE TABLE IF NOT EXISTS CraterTable       (id INTEGER PRIMARY KEY, humanCraterName TEXT, craterDiameterMeters REAL, latitude REAL, longitude REAL, timestamp TEXT)''')
-            self.cursor.execute('''CREATE TABLE IF NOT EXISTS DayGraphTable     (id INTEGER PRIMARY KEY, o2level INTEGER, co2level INTEGER, wattHours INTEGER, hourOfDayNumber INTEGER, dayOfYear INTEGER)''')
-            self.cursor.execute('''CREATE TABLE IF NOT EXISTS WeekGraphTable    (id INTEGER PRIMARY KEY, o2level INTEGER, co2level INTEGER, wattHours INTEGER, weekNumber INTEGER)''')
-            self.cursor.execute('''CREATE TABLE IF NOT EXISTS MonthGraphTable   (id INTEGER PRIMARY KEY, o2level INTEGER, co2level INTEGER, wattHours INTEGER, monthNumber TEXT)''')
+            self.cursor.execute('''CREATE TABLE IF NOT EXISTS CraterTable       (id INTEGER PRIMARY KEY, human_crater_name TEXT, crater_diameter_meters REAL, latitude REAL, longitude REAL, timestamp TEXT)''')
+            self.cursor.execute('''CREATE TABLE IF NOT EXISTS DayGraphTable     (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, hour_of_day_number INTEGER, day_of_year INTEGER)''')
+            self.cursor.execute('''CREATE TABLE IF NOT EXISTS WeekGraphTable    (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, week_number INTEGER)''')
+            self.cursor.execute('''CREATE TABLE IF NOT EXISTS MonthGraphTable   (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, month_number TEXT)''')
 
             # Create debuging logg
             self.cursor.execute('''CREATE TABLE IF NOT EXISTS DebugLoggingTable (id INTEGER PRIMARY KEY, logMessage TEXT)''')
@@ -91,10 +93,10 @@ class Database:
 
             # Commit the five tables to database
             self.conn.commit()
-            """
+
 
     def setup_graph_tables(self):
-        """ Prepopulate DayGraphTable, WeekGraphTable, and MonthGraphTable with 24, 52 and 12 row for quicker db update vs db insert
+        """ Prepopulate DayGraphTable, WeekGraphTable, and MonthGraphTable with 365 * 24, 52 and 12 rows respectively for quicker db update vs db insert
         TODO IS AN UPDATE FASTER THEN AN INSERT IN SQLITE????
 
         """
@@ -150,6 +152,7 @@ class Database:
             pass #TODO
         else:
             self.conn.close()
+
 
     def get_date_time(self) -> datetime:
         """ Get date and time in San Francisco timezone, independent of location of CPU in solar system
@@ -293,6 +296,7 @@ class Database:
         isValid = True
         localCursor = self.conn.execute(sqlStatement, (searchTerm, ))
         #self.conn.fetchall()[0]
+        # TODO https://stackoverflow.com/questions/29935993/selecting-an-entire-table-in-sql
         result = localCursor.fetchall()
 
         if len(result) == 0:
