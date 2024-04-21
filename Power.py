@@ -11,13 +11,18 @@ __doc__        = "Measure real & calculate TODO thearical electrical power usage
 """
 
 ## Standard Library
-from math import pow, sqrt, pi  # Power (2^2), Squareroot (4^0.5), and Pi (3.14159) math helper libraries
-import csv                      # Import csv file to define power sources and sinks
+# Power (2^2), Squareroot (4^0.5), and Pi (3.14159) math helper libraries
+from math import pow, sqrt, pi
+
+# Import csv file to define power sources and sinks
+import csv
+
 
 ## 3rd Party Libraries
 # Sense Flex Power Measurement Sensor
 # https://sense.com/buy
 from sense_energy import Senseable
+
 
 ## Internally Developed Library
 import GlobalConstants as GC
@@ -25,7 +30,7 @@ import GlobalConstants as GC
 
 class Power:
 
-    def __init__(self, partId: str, isPowerSource: bool, minWattage: float, maxWattage: float, currentVoltage: float, currentAmpDraw: float): #, relativeCsvFilepath: str, parts: list):
+    def __init__(self, partId: str, isPowerSource: bool, minWattage: float, maxWattage: float, currentVoltage: float, currentAmpDraw: float):
         """ Constructor to initialize a Power.py object
 
         Arg(s):
@@ -55,11 +60,16 @@ class Power:
         self.maxWatts = maxWattage
         self.volts = currentVoltage
         self.amps = currentAmpDraw
-        #self.csvFilepath = relativeCsvFilepath
-        #self.parts = []
+
 
     def __repr__(self):
-        """ TODO
+        """ Pretty print of Power.py objects
+
+        Arg(s):
+            NONE
+
+        Return:
+            NOTHING
         """
         return f"Power('{self.id}', {self.isSource}, {self.minWatts}, {self.maxWatts}, {self.volts}, {self.amps})"
 
@@ -94,8 +104,9 @@ class Power:
 
         return parts
 
+
     def unit_test():
-        """ Test power measurement and calculation s with float values accurate to 3 sig figs
+        """ Test power measurement and calculations with float values accurate to 3 sig figs
 
         """
         parts = []
@@ -108,8 +119,9 @@ class Power:
             print(f"CPU Part Numbers: {parts[0].id}, {parts[1].id}")
             print(f"CPU Total Min Theorical Power Draw: {parts[0].minWatts + parts[1].minWatts} Watts")
             print(f"CPU Total Max Theorical Power Draw: {parts[0].maxWatts + parts[1].maxWatts} Watts")
-            print("TODO")
-            print("TODO")
+            print(f"CPU Average Instant Voltage {(parts[0].volts + parts[1].volts) / 2}")
+            print(f"CPU Average Instant Current {(parts[0].amps + parts[1].amps) / 2}")
+
 
         # TODO Get exact specs for e-con cameras
         camera1 = Power("302-00001-A:1", False, 0.01, 5.00, 4.99, 0.99)
@@ -120,6 +132,8 @@ class Power:
         camera6 = Power("302-00001-A:6", False, 0.01, 5.00, 4.99, 0.99)
         camera7 = Power("302-00001-A:7", False, 0.01, 5.00, 4.99, 0.99)
         camera8 = Power("302-00001-A:8", False, 0.01, 5.00, 4.99, 0.99)
+        camera9 = Power("302-00001-A:9", False, 0.01, 5.00, 4.99, 0.99)
+        cameraA = Power("302-00001-A:10", False, 0.01, 5.00, 4.99, 0.99)
         parts.append(camera1)
         parts.append(camera2)
         parts.append(camera3)
@@ -128,19 +142,24 @@ class Power:
         parts.append(camera6)
         parts.append(camera7)
         parts.append(camera8)
+        parts.append(camera9)
+        parts.append(cameraA)
         if GC.DEBUG_STATEMENTS_ON:
             totalMinPower = 0.0
             totalMaxPower = 0.0
+            totalVoltage  = 0.0
+            totalCurrent  = 0.0
             for i in range(2, 7):
                 totalMinPower = totalMinPower + parts[i].minWatts
                 totalMaxPower = totalMaxPower + parts[i].maxWatts
+                totalVoltage = totalVoltage + parts[i].volts
+                totalCurrent = totalCurrent + parts[i].amps
 
-            print(f"Camera Part Numbers: {parts[2].id}, {parts[3].id}, TODO")
+            print(f"Camera Part Numbers: {parts[2].id}, {parts[3].id}, {parts[4].id}, {parts[5].id}, {parts[6].id}, {parts[7].id}")
             print(f"Camera Total Min Theorical Power Draw: {totalMinPower} Watts")
             print(f"Camera Total Max Theorical Power Draw: {totalMaxPower} Watts")
-            print("TODO")
-            print("TODO")
-
+            print(f"Camera Average Instant Voltage {totalVoltage / GC.NUMBER_OF_CAMERAS} Volts")
+            print(f"Camera Average Instant Current {totalCurrent / GC.NUMBER_OF_CAMERAS} Amps")
 
         for i in range(len(parts)):
             print(parts[i])
@@ -148,7 +167,8 @@ class Power:
 
 if __name__ == "__main__":
     print("Running Unit Test in Power.py")
-    #Power.unit_test()
+    Power.unit_test()
 
+    print("Running main in Power.py")
     importedParts = Power.load_csv(GC.CSV_POWER_PARTS)
     print(importedParts)
