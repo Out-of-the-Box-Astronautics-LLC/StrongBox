@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
 """
 __authors__    = ["Blaze Sanders", "Vladyslav Haverdovskyi"]
 __contact__    = "blazes@mfc.us"
@@ -8,6 +8,7 @@ __status__     = "Development"
 __deprecated__ = "False"
 __version__    = "0.1.0"
 """
+# Store non-Personally Identifiable Information in a SQLite database
 
 # Disable PyLint linting messages
 # https://pypi.org/project/pylint/
@@ -18,15 +19,27 @@ __version__    = "0.1.0"
 import sqlite3                                  # SQlite Database
 from datetime import datetime, time, timedelta 	# Manipulate calendar dates & time objects https://docs.python.org/3/library/datetime.html
 from time import sleep                          # Pause program execution
-import os                                       # Get filename information like directoty and file path
+import os                                       # Get filename information like enviroment variables, directory names, and full file paths
 import csv                                      # Manipulate .CSV files for data reporting
 import json                                     # Use to serialize a list of list and insert into TEXT column of SQLite database
-from typing import Optional                     # TODO Give function argument an optional
+from typing import Optional                     # TODO Give all function arguments an optional types
+
 
 ## 3rd party libraries
-import pytz 					                # World Timezone Definitions  https://pypi.org/project/pytz/
-from pytz import timezone                       # Sync data write time to database no matter where server is located https://pypi.org/project/pytz
-#TODO Turo SQLite to
+# World Timezone to sync data write time to database no matter where server is located https://pypi.org/project/pytz
+# https://pypi.org/project/pytz/
+import pytz
+from pytz import timezone
+
+# Turso online SQLite database
+# https://docs.turso.tech/sdk/python/quickstart
+import libsql_experimental as libsql
+
+# Load environment variables for usernames, passwords, & API keys
+# Used to login into Sense API
+# https://pypi.org/project/python-dotenv/
+from dotenv import dotenv_values
+
 
 ## Internally developed code base
 import GlobalConstants as GC
@@ -34,43 +47,63 @@ import GlobalConstants as GC
 
 class Database:
 
-    ONE_MOON_DAY = 28.5                         # TODO Exactly 28.5? Units are days
-    ONE_MOON_ORBIT_AROUND_EARTH = ONE_MOON_DAY  # TODO Are they exactly the same?
+    # The Moons synodic orbital period is exactly equal to lunar day (Sidereal orbital period is 27 days, 7 hours, 43 mins, and 11.5 seconds)
+    ONE_MOON_DAY = 708.7                        # Units are hours (29.53 Earth days = 708.7 Earth hours)
+    ONE_MOON_ORBIT_AROUND_EARTH = ONE_MOON_DAY
 
-    """ Store non-Personally Identifiable Information in a SQLite database
-    """
 
-    def __init__(self, filename: str = 'test.db'):
+    def __init__(self, filename: str = 'test.db', isOnline: bool = False):
         """ Constructor to initialize an Database object
         """
-        # Connect to the database (create if it doesn't exist)
-        self.conn = sqlite3.connect(filename)
-        self.cursor = self.conn.cursor()
+        if isOnline:
+            config = dotenv_values()
+            url = config['STRONG_BOX_GUI_DB_URL']
+            authToken = config['STRONG_BOX_GUI_DB_TOKEN']
 
-        # Create ?TODO? tables in .db file for collecting Moon data
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS CraterTable       (id INTEGER PRIMARY KEY, humanCraterName TEXT, craterDiameterMeters REAL, latitude REAL, longitude REAL, timestamp TEXT)''')
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS DayGraphTable     (id INTEGER PRIMARY KEY, o2level INTEGER, co2level INTEGER, wattHours INTEGER, hourOfDayNumber INTEGER)''')
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS WeekGraphTable    (id INTEGER PRIMARY KEY, o2level INTEGER, co2level INTEGER, wattHours INTEGER, weekNumber INTEGER)''')
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS MonthGraphTable   (id INTEGER PRIMARY KEY, o2level INTEGER, co2level INTEGER, wattHours INTEGER, monthNumber TEXT)''')
+            self.conn = libsql.connect('strongbox-gui-db.db', sync_url=url, auth_token=authToken)
+            self.conn.sync()
+            self.dbOnline = True
 
-        # Create debuging logg
-        self.cursor.execute('''CREATE TABLE IF NOT EXISTS DebugLoggingTable (id INTEGER PRIMARY KEY, logMessage TEXT)''')
+            if GC.DEBUG_STATEMENTS_ON: print(f"URL: {url}")
+            if GC.DEBUG_STATEMENTS_ON: print(f"TOKEN: {authToken}")
 
-        # Confifure graph database at .db file creation
-        self.setup_graph_tables()
+        else:
+            # Local SQLite .db file
+            self.conn = libsql.connect(filename)
+            self.cursor = self.conn.cursor()
+            self.dbOnline = False
 
-        # Commit the five tables to database
-        self.conn.commit()
+
+            #TODO REMOVE IF NEW LOCAL METHOD ABOVE WORKS???
+            # Connect to the local database (create if it doesn't exist)
+            #self.conn = sqlite3.connect(filename)
+            #self.cursor = self.conn.cursor()
+
+            # Create ?TODO? tables in .db file for collecting Moon data
+            self.cursor.execute('''CREATE TABLE IF NOT EXISTS CraterTable       (id INTEGER PRIMARY KEY, human_crater_name TEXT, crater_diameter_meters REAL, latitude REAL, longitude REAL, timestamp TEXT)''')
+            self.cursor.execute('''CREATE TABLE IF NOT EXISTS DayGraphTable     (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, hour_of_day_number INTEGER, day_of_year INTEGER)''')
+            self.cursor.execute('''CREATE TABLE IF NOT EXISTS WeekGraphTable    (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, week_number INTEGER)''')
+            self.cursor.execute('''CREATE TABLE IF NOT EXISTS MonthGraphTable   (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, month_number TEXT)''')
+
+            # Create debuging logg
+            self.cursor.execute('''CREATE TABLE IF NOT EXISTS DebugLoggingTable (id INTEGER PRIMARY KEY, logMessage TEXT)''')
+
+            # Confifure graph database at .db file creation
+            self.setup_graph_tables()
+
+            # Commit the five tables to database
+            self.conn.commit()
 
 
     def setup_graph_tables(self):
-        """ Prepopulate DayGraphTable, WeekGraphTable, and MonthGraphTable with 24, 52 and 12 row for quicker db update vs db insert
-            TODO IS AN UPDATE FASTER THEN AN INSERT IN SQLITE????
+        """ Prepopulate DayGraphTable, WeekGraphTable, and MonthGraphTable with 365 * 24, 52 and 12 rows respectively for quicker db update vs db insert
+        TODO IS AN UPDATE FASTER THEN AN INSERT IN SQLITE????
 
         """
-        # Each day has 24 hours with 23 different values of 0100 to 2300
+        # Each day has 24 hours with 24 different values of 0000 to 2300 for 365 days per year (leap years ignored)
         for hourNumber in range(100, 2400, 100):
-            self.insert_day_graph_table(0, 0, 0, hourNumber)
+            for dayNumber in range(1, 366):
+                self.insert_day_graph_table(0, 0, 0, hourNumber, dayNumber)
 
         # Each year has 52 weeks
         for weekNumber in range(1, 53):
@@ -82,18 +115,27 @@ class Database:
 
 
     #TODO UPDATE NEXT THREE FUNCTIONS WITH MATCH DB DEFINTATIONS
-    def insert_day_graph_table(self, o2: int, co2: int, wH: int, hourOfDayNum: int):
-        self.cursor.execute("INSERT INTO DayGraphTable(o2level, co2level, wattHours, hourOfDayNumber) VALUES (?, ?, ?, ?)", (o2, co2, wH, hourOfDayNum))
+    def insert_day_graph_table(self, o2: int, co2: int, wH: int, hourOfDayNum: int, dayOfYr: int):
+        """ Insert sensor data, energy usage, and timestamp info into a day to day table that overwrites every 365 days
+
+        Arg(s):
+            o2  (Integer): TODO
+            co2 (Integer): TODO
+            wH  (Integer): Energy (NOT POWER) usage in units of Watt-Hours (NOT POWER)
+            hourOfDayNum (Integer): Each day has 24 hours with 23 different values of 0000 to 2300, in increments of 0100
+            dayOfYr (Integer): TODO IS THIS A VALID VARIABLE TO GET FROM DATETIME() STANDARD LIBRARY? TODO
+        """
+        self.conn.execute("INSERT INTO DayGraphTable(o2level, co2level, wattHours, hourOfDayNumber, dayOfYear) VALUES (?, ?, ?, ?, ?)", (o2, co2, wH, hourOfDayNum, dayOfYr))
         self.commit_changes()
 
 
     def insert_week_graph_table(self, o2: int, co2: int, wH: int, weekNum: int):
-        self.cursor.execute("INSERT INTO WeekGraphTable(o2level, co2level, wattHours, weekNumber) VALUES (?, ?, ?, ?)", (o2, co2, wH, weekNum))
+        self.conn.execute("INSERT INTO WeekGraphTable(o2level, co2level, wattHours, weekNumber) VALUES (?, ?, ?, ?)", (o2, co2, wH, weekNum))
         self.commit_changes()
 
 
     def insert_month_graph_table(self, o2: int, co2: int, wH: int, monthNum: int):
-        self.cursor.execute("INSERT INTO MonthGraphTable(o2level, co2level, wattHours, monthNumber) VALUES (?, ?, ?, ?)", (o2, co2, wH, monthNum))
+        self.conn.execute("INSERT INTO MonthGraphTable(o2level, co2level, wattHours, monthNumber) VALUES (?, ?, ?, ?)", (o2, co2, wH, monthNum))
         self.commit_changes()
 
 
@@ -104,9 +146,12 @@ class Database:
 
 
     def close_database(self):
-        """ Close database to enable another sqlite3 instance to query a *.db database
+        """ Close database to enable another local sqlite3 OR online libsql instance to query a *.db database
         """
-        self.conn.close()
+        if self.dbOnline:
+            pass #TODO
+        else:
+            self.conn.close()
 
 
     def get_date_time(self) -> datetime:
@@ -115,7 +160,7 @@ class Database:
         Returns:
             Datetime:
         """
-        tz = pytz.timezone('America/SanFrancico')
+        tz = pytz.timezone('America/Los_Angeles')
         zulu = pytz.timezone('UTC')                 # Zulu time is UTC +0
         now = datetime.now(tz)
         if now.dst() == timedelta(0):
@@ -142,7 +187,7 @@ class Database:
             date (str): Timestamp in ISO8601 format for the date energy was used (e.g 2024-01-01)
 
         Returns:
-            int: Database index id of last row inserted OR -1 if
+            int: Database index id of last row inserted (1-based indicies) OR -1 if insert failed
         """
         timeStamp = str(datetime.strptime(date, '%Y-%m-%d').isoformat(timespec="minutes")[0:10])
         results, isEmpty, isValid = self.get_daily_sensor_data(timeStamp)
@@ -247,11 +292,12 @@ class Database:
         else:
             sqlStatement = f"SELECT * FROM {tableName} WHERE timestamp = ?"  #f"SELECT * FROM {tableName} WHERE content LIKE ?, ('%' + {str(searchTerm)} + '%',)" #self.cursor.execute("SELECT * FROM DatasetTable WHERE content LIKE ?", ('%' + str(searchTerm) + '%',))
 
-        self.cursor.execute(sqlStatement, (searchTerm, ))
-
         isEmpty = False
         isValid = True
-        result = self.cursor.fetchall()[0]
+        localCursor = self.conn.execute(sqlStatement, (searchTerm, ))
+        #self.conn.fetchall()[0]
+        # TODO https://stackoverflow.com/questions/29935993/selecting-an-entire-table-in-sql
+        result = localCursor.fetchall()
 
         if len(result) == 0:
             isEmpty = True
@@ -358,7 +404,8 @@ class Database:
 if __name__ == "__main__":
     print("Testing Database.py")
 
-    db = Database('UnitTest.db')
+    isOnline = True
+    db = Database('UnitTest.db', isOnline)
 
     date = db.get_date_time()
     isoDateDay = date.isoformat()[0:10]
@@ -368,7 +415,8 @@ if __name__ == "__main__":
     carbonMonoxideLevel = 7     # Units are milliBar (Mars atomsphereic pressure is 7 milliBar on average
     powerDraw = 0               # Units are watt-Hours
     missionStartHour = 1600     # Units of 24-hour clock, so 4 pm
-    db.insert_day_graph_table(oxygenLevel, carbonMonoxideLevel, powerDraw, missionStartHour)
+    dayOfYear = 300
+    db.insert_day_graph_table(oxygenLevel, carbonMonoxideLevel, powerDraw, missionStartHour, dayOfYear)
 
     results = db.query_table("CraterTable", "Shackelton Crater")
     if GC.DEBUG_STATEMENTS_ON: print(results)

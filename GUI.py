@@ -79,7 +79,7 @@ async def get_browser_window_size() -> None:
 if __name__ in {"__main__", "__mp_main__"}:
     darkMode.disable()
 
-    db1 = db.Database("GUI.db")
+    db1 = db.Database("strongbox-gui-db.db")
     get_browser_window_size()
 
     #ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: page_refresh())
@@ -98,8 +98,8 @@ if __name__ in {"__main__", "__mp_main__"}:
     # Incoming APIs
     try:
         config = dotenv_values()
-        url = config['TURSO_URL']
-        key = config['TURSO_KEY']
+        url = config['STRONG_BOX_GUI_DB_URL']
+        key = config['STRONG_BOX_GUI_DB_TOKEN']
 
         # Create directory and URL for local storage of images
         if sys.platform.startswith('darwin'):
@@ -121,8 +121,8 @@ if __name__ in {"__main__", "__mp_main__"}:
 
 
     finally:
-        url = config['TURSO_URL']
-        key = config['TURSO_KEY']
+        url = config['STRONG_BOX_GUI_DB_URL']
+        key = config['STRONG_BOX_GUI_DB_TOKEN']
 
 
     ui.colors(primary=GC.STRONG_BOX_BLUE)
