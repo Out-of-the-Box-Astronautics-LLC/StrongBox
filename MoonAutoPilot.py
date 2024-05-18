@@ -68,7 +68,7 @@ class MoonAutoPilot:
         self.referenceSpaceImages = []          # Images of mostly black space with stars, stored in RAM
         self.flameyEndDown = False              # https://xkcd.com/1133 and https://imgs.xkcd.com/comics/up_goer_five.png
 
-        self.craterDB = db.Database("MoonCraterPositions.db")   # SQLite database to store all live updating crater position
+        #self.craterDB = db.Database("MoonCraterPositions.db")   # SQLite database to store all live updating crater position
         self.image_uri = None                   # Filepath for images saved to SSD, set 
         self.video_uri = None                   #TODO
 
@@ -264,9 +264,9 @@ class MoonAutoPilot:
 
 
     def unit_test(self):
-        images = ['NearSurveyor6_HeightUnknown.png']
-        img = test.load_image(images[0], MoonAutoPilot.RGB_MODE)
-        #TODO Fix runtime error
+        #images = ['NearSurveyor6_HeightUnknown.png']
+        #img = test.load_image('/home/kb3tyv/GitRepos/StrongBox/static/images/NearSurveyor6_HeightUnknown.png', MoonAutoPilot.RGB_MODE)
+        img = cv2.imread('/home/kb3tyv/GitRepos/StrongBox/static/images/NearSurveyor6_HeightUnknown.png', MoonAutoPilot.RGB_MODE)
         test.find_crater_centers(img)
         test.show_image_for_debugging("Moon AutoPilot v0.1" , img)
 

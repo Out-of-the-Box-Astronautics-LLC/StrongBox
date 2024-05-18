@@ -79,7 +79,7 @@ async def get_browser_window_size() -> None:
 if __name__ in {"__main__", "__mp_main__"}:
     darkMode.disable()
 
-    db1 = db.Database("strongbox-gui-db.db")
+    #db1 = db.Database("strongbox-gui-db.db")
     get_browser_window_size()
 
     #ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: page_refresh())
@@ -117,12 +117,14 @@ if __name__ in {"__main__", "__mp_main__"}:
             quit()
 
     except KeyError:
-        db1.insert_debug_logging_table("ERROR: Could not find .ENV file when calling dotenv_values()")
+        pass
+        #db1.insert_debug_logging_table("ERROR: Could not find .ENV file when calling dotenv_values()")
 
 
     finally:
-        url = config['STRONG_BOX_GUI_DB_URL']
-        key = config['STRONG_BOX_GUI_DB_TOKEN']
+        pass
+        #url = config['STRONG_BOX_GUI_DB_URL']
+        #key = config['STRONG_BOX_GUI_DB_TOKEN']
 
 
     ui.colors(primary=GC.STRONG_BOX_BLUE)

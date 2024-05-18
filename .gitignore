@@ -1,18 +1,25 @@
+# SQLite and LibSQL database files
 *.db
 strongbox-gui-db.db-client_wal_index
 strongbox-gui-db.db-shm
 strongbox-gui-db.db-wal
 
+# Python Virtual Enviroment file created using 'python3 -m venv ?' command
 .venv
 .venvStrongBox
 
+# Hidden file for storing passwords and API tokens
 .env
 
+# MacOS directoty metadata
 .DS_Store
 
+# Python 'compile' files
 __pycache__
 *.swp
 
+# Build directories to ignore
 OpenCV_Download_Build_Directory/
 
+# Send this file to ChatGPT to write useful git commit messages 
 diff.txt
