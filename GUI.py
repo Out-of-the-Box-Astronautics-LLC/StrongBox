@@ -147,7 +147,7 @@ if __name__ in {"__main__", "__mp_main__"}:
     currentFramesB = [GC.CURRENT_FRAMES+"B0.jpeg", GC.CURRENT_FRAMES+"B1.jpeg", GC.CURRENT_FRAMES+"B2.jpeg", GC.CURRENT_FRAMES+"B3.jpeg"]
 
     with ui.footer(value=True) as footer:
-        ui.label('Strong Box: Air Plant 1 Mission').style(f"font-size: 25px;")
+        ui.label('Strong Box: Air Plant One Mission').style(f"font-size: 25px;")
 
     # A0 is the image on the A side of Strong Box hardware, displayed at 0 degrees (on compass which is North) on GUI
     # B270 os the image on the B side of Strong Box hardware, displayed at 270 degrees (on compass which is West) on GUI
