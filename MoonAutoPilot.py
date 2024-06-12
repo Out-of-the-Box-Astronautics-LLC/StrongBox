@@ -24,7 +24,7 @@ __version__    = "0.0.1"
 ## Standard Python libraries
 import sys                                      # Determine which OS this code is running on https://docs.python.org/3/library/sys.html
 from datetime import datetime, time, timedelta  # Manipulate calendar dates & time objects https://docs.python.org/3/library/datetime.html
-import traceback				                # Extract, format and print stack traces of a python program, mimicing python interpreter
+import traceback				# Extract, format and print stack traces of a python program, mimicing python interpreter
 import os                                       # Allow program to extract filename of the current file
 
 ## 3rd party libraries
@@ -264,9 +264,8 @@ class MoonAutoPilot:
 
 
     def unit_test(self):
-        #images = ['NearSurveyor6_HeightUnknown.png']
-        #img = test.load_image('/home/kb3tyv/GitRepos/StrongBox/static/images/NearSurveyor6_HeightUnknown.png', MoonAutoPilot.RGB_MODE)
-        img = cv2.imread('/home/kb3tyv/GitRepos/StrongBox/static/images/NearSurveyor6_HeightUnknown.png', MoonAutoPilot.RGB_MODE)
+        currentDirectory = os.getcwd()
+        img = cv2.imread(currentDirectory + '/static/images/NearSurveyor6_HeightUnknown.png', MoonAutoPilot.RGB_MODE)
         test.find_crater_centers(img)
         test.show_image_for_debugging("Moon AutoPilot v0.1" , img)
 
