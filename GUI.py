@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
 """
 __authors__    = ["Blaze Sanders"]
 __contact__    = "blazes@mfc.us"
@@ -47,14 +47,25 @@ darkMode  = ui.dark_mode()
 winWidth  = -1
 winHeight = -1
 
+
+def set_background(color: str) -> None:
+    ui.query('body').style(f'background-color: {color}')
+
+
+async def home_page():
+    """Custom page not auto-indexed."""
+    await ui.run_javascript('document.title = "Home Page"')
+    ui.label('This is a custom page that is not auto-indexed.')
+    await get_browser_window_size()
+
+# Route to the custom page
+ui.page('/home')(home_page)
+
+
 async def page_refresh():
     set_background(GC.STRONG_BOX_GREEN)
     await get_browser_window_size()
 
-
-
-def set_background(color: str) -> None:
-    ui.query('body').style(f'background-color: {color}')
 
 
 async def get_browser_window_size() -> None:
@@ -69,8 +80,12 @@ async def get_browser_window_size() -> None:
     """
     global winWidth
     global winHeight
-    winWidth  = await ui.run_javascript('window.innerWidth')
-    winHeight = await ui.run_javascript('window.innerHeight')
+    widthResponse  = await ui.run_javascript('''window.innerWidth''')
+    heightResponse = await ui.run_javascript('''window.innerHeight''')
+
+    # Await the response to get the actual value
+    winWidth = await widthResponse
+    winHeight = await heightResponse
 
     if GC.DEBUG_STATEMENTS_ON: print(f"Browser Window is {winWidth} px wide and {winHeight} px tall")
 
@@ -80,7 +95,7 @@ if __name__ in {"__main__", "__mp_main__"}:
     darkMode.disable()
 
     #db1 = db.Database("strongbox-gui-db.db")
-    get_browser_window_size()
+
 
     #ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: page_refresh())
     ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: set_background(GC.STRONG_BOX_GREEN))
@@ -135,10 +150,11 @@ if __name__ in {"__main__", "__mp_main__"}:
     frameRate = 30
     textFontSize = 50
 
+    if GC.DEBUG_STATEMENTS_ON: print(f"Window Width is currently: {winWidth}")
     if winWidth < (1080/2):
-        textFontSize = 40
+        textFontSize = 35
     if winWidth < (1080/4):
-        textFontSize = 30
+        textFontSize = 25
     if GC.DEBUG_STATEMENTS_ON: print(f"Font size was set to: {textFontSize}")
 
     lastFramesA = [GC.LAST_FRAMES+"A0.jpeg", GC.LAST_FRAMES+"A1.jpeg", GC.LAST_FRAMES+"A2.jpeg", GC.LAST_FRAMES+"A3.jpeg"]
@@ -178,7 +194,7 @@ if __name__ in {"__main__", "__mp_main__"}:
         blankImageCellInGrid = ui.image('')
 
         cameraB270image = ui.image(GC.TEST_IMAGE)
-        ui.label(f"SIDE B CAMERA'S: {frameRate} Hz").style(f"width: {imageWidth}px; font-size: 50px; display: flex; justify-content: center; align-items: center;")
+        ui.label(f"SIDE B CAMERA'S: {frameRate} Hz").style(f"width: {imageWidth}px; font-size: {textFontSize}px; display: flex; justify-content: center; align-items: center;")
         cameraB90image = ui.image(GC.TEST_IMAGE)
 
         blankImageCellInGrid = ui.image('')
