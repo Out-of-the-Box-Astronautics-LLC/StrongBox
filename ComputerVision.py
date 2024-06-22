@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """
 __authors__    = ["Blaze Sanders"]
-__contact__    = "blazes@mfc.us"
+__contact__    = "info@strongbox.space"
 __copyright__  = "Copyright 2023"
 __license__    = "MIT License"
 __status__     = "Development"
-__deprecated__ = False
+__deprecated__ = "False"
 __version__    = "0.0.1"
 """
-# Analyze the size of Moon craters and determine height above the surface
+# Analyze the size & location of Moon craters and determine height above the surface
 
 # Useful standard Python system jazz
 import sys, time, traceback, argparse, string
+from math import sqrt
 
 # Allow program to extract filename of the current file
 import os
@@ -33,14 +34,11 @@ except ImportError:
 
 
 # Create a command line parser
-# parser = argparse.ArgumentParser(prog = "Tapomatic Computer Vision", description = __doc__, add_help=True)
-# parser.add_argument("-f", "--filename", type=str, default="Update.py", help="Local or cloud software to be loaded on ki$
+# parser = argparse.ArgumentParser(prog = "Strong Box Computer Vision", description = __doc__, add_help=True)
+# parser.add_argument("-f", "--filename", type=str, default="Update.py", help="Local or cloud software to be loaded on to device")
 # parser.add_argument("-l", "--loop", type=int, default=0, help="Set to 1 to loop this driver program.")
 # args = parser.parse_args()
 
-##GUIDE TO BEGINNERS
-##Treat the Image as a matrix and that is how computers see and store the images.
-## [x,y]
 
 class ComputerVision():
     def printImageForTestingPurpose(self, name, img):
@@ -77,20 +75,42 @@ class ComputerVision():
         Return value:
         img -- Image header object
         """
-        print("TODO: CHECK FOR >PNG?")
-        path = "static/CVImages/" + filename
-        print(" path " + path)
-        img = cv2.imread(path, mode)  # 0 for black, 1 for rgb
-        return img
+        parts = filename.split('.')
+        if parts[-1].upper() == 'PNG' or parts[-1].upper() == 'JPEG':
+            path = "static/images/" + filename
+            print(" path " + path)
+            img = cv2.imread(path, mode)  # 0 for black, 1 for rgb
+            return img
+        else:
+            print("Please pass a .png or .jpeg file to the LoadImage() function")
 
-    def FindScale(self):
+    def find_scale(self, point1, point2, realSize):
+        """ Define  the scale between digitial pixels and real life object size (1:100 scale means 1 pixel equals 100 meters)
         """
-        Find the ruler or object in background that define scale between pixel and real life size
+        numOfPixels = ComputerVision.measure_pixels(point1, point2)
 
+        return ComputerVision.simplify_fraction(numOfPixels, realSize)
+
+    def gcd(a, b):
+        """ Calculate the Greatest Common Divisor of a and b using recursion
         """
+        if b == 0:
+            return a
+        else:
+            return ComputerVision.gcd(b, a % b)
 
-        ## 6 and from the cv code the distance is 6 then we are good
-        print("TODO: Very hard")
+    def simplify_fraction(numerator, denominator):
+        """ Simplify a fraction using the gcd function
+        """
+        # Find the GCD of the numerator and denominator
+        divisor = ComputerVision.gcd(numerator, denominator)
+
+        # Divide both numerator and denominator by the GCD
+        simplifiedNumerator = numerator // divisor
+        simplifiedDenominator = denominator // divisor
+
+        return simplifiedNumerator, simplifiedDenominator
+
 
     def IncreaseContrast(self, image, percentage):
         """
@@ -228,13 +248,15 @@ class ComputerVision():
         rowList = ["y=1/98x-69", "y=-1/97+70"]  # Temp List
         return rowList
 
-    def MeasurePixels(self, edge1, edge2):
+    def measure_pixels(p1, p2):
         """
 
         Return values:
-        numOfPixels -- Number of pixels between two nearly perpendicular lines
+        numOfPixels -- Number of pixels between two 2D points on a plane
         """
-
+        xDistance = p2[0] - p1[0]
+        yDistance = p2[1] - p1[1]
+        numOfPixels = sqrt(xDistance**2 + yDistance**2)
         return numOfPixels
 
     def CreateQRcode():
@@ -267,35 +289,31 @@ class ComputerVision():
 
 if __name__ == "__main__":
     object = ComputerVision()
+
     # The CV flow should probably be done in the following order
-    ##TODO Remove this later, only testing purposes loading images statically here.
-    filename = "coco_1.jpg"
+    filename = "StrongBoxLogo.jpeg"
     img = object.LoadImage(filename, 1)
-    ##TODO REMOVE LATER, Will open loaded images in a seperate window.
-    object.printImageForTestingPurpose('COCO IMAGE ORIGINAL', img)
+    object.printImageForTestingPurpose('Strong Box Original Image', img)
 
-    ##TODO COMMENT UNTIL MURALI GET SOME CLARITY FROM BLAZE ON WHAT TO DO.
-    # scale = FindScale(filename)  #TODO HARD
+    point1 = (0, 0)
+    point2 = (30, 40)
+    print(object.find_scale(point1, point2, 100))
 
-    contrastColorImg = object.IncreaseContrast(img, 100)  ##TODO BLAZE, SEE MY EXPLANATION
-    ##TODO Remove later Testing Purpose Only.
+    contrastColorImg = object.IncreaseContrast(img, 100)
     object.printImageForTestingPurpose('CONTRASTED IMAGE', contrastColorImg)
 
-    ##Convert TO Black and White.
     bwImg = object.ConvertToBW(img)
-    ##Convert TO Gray.
     grayImg = object.ConvertToGray(img)
-    ##TODO Remove later Testing Purpose Only.
     object.printImageForTestingPurpose('GREY IMAGE', grayImg)
 
     columnList = object.FindSideToSideEdges(grayImg)
     # columnList[1] = edge1
-    #  columnList[2] = edge2
-    # sideToSidePixels = object.MeasurePixels(edge1, edge2)
+    # columnList[2] = edge2
+    # sideToSidePixels = object.measure_pixels(edge1, edge2)
     # coconutWidth = object.ConvertToLength(scale, sideToSidePixels)
 
     # rowList = FindTopToBottomEdges(bwImage)
     # rowList[1] = edge1
     # rowList[2] = edge2
-    # topToBottomPixels = MeasurePixels(edge1, edge2)
+    # topToBottomPixels = measure_pixels(edge1, edge2)
     # coconutHeight = ConvertToLength(scale, topToBottomPixels)
