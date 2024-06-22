@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
 __authors__    = ["Blaze Sanders"]
-__contact__    = "blazes@mfc.us"
+__contact__    = "info@strongbox.space"
 __copyright__  = "Copyright 2024"
 __license__    = "MIT License"
 __status__     = "Development"
@@ -21,9 +21,12 @@ __version__    = "0.0.1"
 # Using Command Line Interface (CLI): pyright GUI.py
 # Update using "pip install --upgrade pyright" in CLI
 
-# Standard Python libraries
-import sys          # Use to determine which OS (MacOS, Linux, or Windows) code is running on
+## Standard Python libraries
+import sys          	# Used to determine which OS (MacOS, Linux, or Windows) code is running on
+from time import sleep	# Used to program pause execution
 
+
+## 3rd Party Libraries
 # Browser base GUI framework to build and display a user interface mobile, PC, and Mac
 # https://nicegui.io/
 from nicegui import app, ui
@@ -32,6 +35,7 @@ from nicegui.events import MouseEventArguments
 # Load environment variables for usernames, passwords, & API keys
 # https://pypi.org/project/python-dotenv/
 from dotenv import dotenv_values
+
 
 ## Internally developed modules
 import GlobalConstants as GC    # Useful global constants used across multiple files
@@ -43,67 +47,30 @@ import Database as db           # SQLite database to store crate locations
 # Application boots up in light mode
 isDarkModeOn = False
 darkMode  = ui.dark_mode()
-# Browser window pixel sizes
-winWidth  = -1
-winHeight = -1
+ui.colors(primary=GC.STRONG_BOX_BLUE)
+
+imageWidth = 720
+frameRate = 30
+textFontSize = 25
 
 
 def set_background(color: str) -> None:
     ui.query('body').style(f'background-color: {color}')
 
 
-async def home_page():
-    """Custom page not auto-indexed."""
-    await ui.run_javascript('document.title = "Home Page"')
-    ui.label('This is a custom page that is not auto-indexed.')
-    await get_browser_window_size()
-
-# Route to the custom page
-ui.page('/home')(home_page)
-
-
-async def page_refresh():
+def page_refresh():
     set_background(GC.STRONG_BOX_GREEN)
-    await get_browser_window_size()
-
-
-
-async def get_browser_window_size() -> None:
-    """ Use Javascript to get the size of the current browser window NiceGUI is running in
-        https://nicegui.io/documentation/run_javascript#run_javascript
-
-    Args:
-        TODO NEEDED? windowID (interger): Number from 0 to ? defining each Window
-
-    Return(s):
-        Updates window width (winWidth) and window height (winHeight) global variable 
-    """
-    global winWidth
-    global winHeight
-    widthResponse  = await ui.run_javascript('''window.innerWidth''')
-    heightResponse = await ui.run_javascript('''window.innerHeight''')
-
-    # Await the response to get the actual value
-    winWidth = await widthResponse
-    winHeight = await heightResponse
-
-    if GC.DEBUG_STATEMENTS_ON: print(f"Browser Window is {winWidth} px wide and {winHeight} px tall")
-
 
 
 if __name__ in {"__main__", "__mp_main__"}:
     darkMode.disable()
 
-    #db1 = db.Database("strongbox-gui-db.db")
+    db1 = db.Database("strongbox-gui-db.db")
 
-
-    #ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: page_refresh())
-    ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: set_background(GC.STRONG_BOX_GREEN))
+    #ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: set_background(GC.STRONG_BOX_GREEN))
     with ui.row().classes("self-center"):
-        #ui.button("RUN JAVASCRIPT", on_click=lambda e: get_browser_window_size())
-        ui.button("RUN JAVASCRIPT", on_click=lambda e: page_refresh())
+        ui.button("PAGE REFRESH", on_click=lambda e: page_refresh())
 
-    #TODO FIND USE FOR SVG DRAWING UPDATE AT BOTTOM OF PAGE ui.timer(GC.CLOCK_UPDATE_TIME, lambda: clock.set_content(build_svg()))
 
     if __name__ == "__main__":
         # Outgoing API connection should only run once, on single port, in a single threaded main function
@@ -124,7 +91,7 @@ if __name__ in {"__main__", "__mp_main__"}:
             app.add_static_files('/static/images', GC.LINUX_CODE_DIRECTORY + '/static/images')
             app.add_static_files('/static/videos', GC.LINUX_CODE_DIRECTORY + '/static/videos')
         elif sys.platform.startswith('win'):
-            print("WARNING: Running MainHouse.py server code on Windows OS is NOT fully supported")
+            print("WARNING: Running GUI.py code on Windows OS is NOT fully supported")
             app.add_static_files('/static/images', GC.WINDOWS_CODE_DIRECTORY + '/static/images')
             app.add_static_files('/static/videos', GC.WINDOWS_CODE_DIRECTORY + '/static/videos')
         else:
@@ -133,7 +100,7 @@ if __name__ in {"__main__", "__mp_main__"}:
 
     except KeyError:
         pass
-        #db1.insert_debug_logging_table("ERROR: Could not find .ENV file when calling dotenv_values()")
+        db1.insert_debug_logging_table("ERROR: Could not find .ENV file when calling dotenv_values()")
 
 
     finally:
@@ -142,21 +109,9 @@ if __name__ in {"__main__", "__mp_main__"}:
         #key = config['STRONG_BOX_GUI_DB_TOKEN']
 
 
-    ui.colors(primary=GC.STRONG_BOX_BLUE)
-
-
-    # Eight HD 720p (1280 × 720) and/or 4K UHD (3840 × 2160) cameras on the corners of the A & B sides of a Strong Box cube in two 3 x 3 grids (for MVP. Mission code with stitch into two circles)
-    imageWidth = 720
-    frameRate = 30
-    textFontSize = 50
-
-    if GC.DEBUG_STATEMENTS_ON: print(f"Window Width is currently: {winWidth}")
-    if winWidth < (1080/2):
-        textFontSize = 35
-    if winWidth < (1080/4):
-        textFontSize = 25
     if GC.DEBUG_STATEMENTS_ON: print(f"Font size was set to: {textFontSize}")
 
+    # Eight HD 720p (1280 × 720) or 4K UHD (3840 × 2160) cameras on the corners of the A & B sides of a Strong Box cube in two 3 x 3 grids (for MVP. Mission code with stitch into two circles)
     lastFramesA = [GC.LAST_FRAMES+"A0.jpeg", GC.LAST_FRAMES+"A1.jpeg", GC.LAST_FRAMES+"A2.jpeg", GC.LAST_FRAMES+"A3.jpeg"]
     lastFramesB = [GC.LAST_FRAMES+"B0.jpeg", GC.LAST_FRAMES+"B1.jpeg", GC.LAST_FRAMES+"B2.jpeg", GC.LAST_FRAMES+"B3.jpeg"]
     currentFramesA = [GC.CURRENT_FRAMES+"A0.jpeg", GC.CURRENT_FRAMES+"A1.jpeg", GC.CURRENT_FRAMES+"A2.jpeg", GC.CURRENT_FRAMES+"A3.jpeg"]
