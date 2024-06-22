@@ -60,6 +60,7 @@ class Database:
             url = config['STRONG_BOX_GUI_DB_URL']
             authToken = config['STRONG_BOX_GUI_DB_TOKEN']
 
+
             self.conn = libsql.connect('strongbox-gui-db.db', sync_url=url, auth_token=authToken)
             self.conn.sync()
             self.dbOnline = True
@@ -73,36 +74,54 @@ class Database:
             self.cursor = self.conn.cursor()
             self.dbOnline = False
 
-
-            #TODO REMOVE IF NEW LOCAL METHOD ABOVE WORKS???
-            # Connect to the local database (create if it doesn't exist)
-            #self.conn = sqlite3.connect(filename)
-            #self.cursor = self.conn.cursor()
-
             # Create ?TODO? tables in .db file for collecting Moon data
             self.cursor.execute('''CREATE TABLE IF NOT EXISTS CraterTable       (id INTEGER PRIMARY KEY, human_crater_name TEXT, crater_diameter_meters REAL, latitude REAL, longitude REAL, timestamp TEXT)''')
             self.cursor.execute('''CREATE TABLE IF NOT EXISTS DayGraphTable     (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, hour_of_day_number INTEGER, day_of_year INTEGER)''')
             self.cursor.execute('''CREATE TABLE IF NOT EXISTS WeekGraphTable    (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, week_number INTEGER)''')
             self.cursor.execute('''CREATE TABLE IF NOT EXISTS MonthGraphTable   (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, month_number TEXT)''')
 
-            # Create debuging logg
+            # Create debuging log
             self.cursor.execute('''CREATE TABLE IF NOT EXISTS DebugLoggingTable (id INTEGER PRIMARY KEY, logMessage TEXT)''')
 
-            # Confifure graph database at .db file creation
-            self.setup_graph_tables()
+
+            if Database.check_table_exists(filename, "DayGraphTable"):
+                pass # Do nothing since tables were create at with Database.py object
+            else:
+                # Configure graph database at .db file creation
+                print(f"The table '{table_name}' does not exist in the database '{db_name}'.")
+                self.setup_graph_tables()
 
             # Commit the five tables to database
             self.conn.commit()
 
 
+    def check_table_exists(db_name, table_name):
+        # Connect to the SQLite database
+        conn = sqlite3.connect(db_name)
+        cursor = conn.cursor()
+
+        # Query the sqlite_master table
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (table_name,))
+
+        # Fetch one result
+        table_exists = cursor.fetchone()
+
+        # Close the cursor and connection
+        cursor.close()
+        conn.close()
+
+        # Return True if the table exists, otherwise False
+        return table_exists is not None
+
+
     def setup_graph_tables(self):
-        """ Prepopulate DayGraphTable, WeekGraphTable, and MonthGraphTable with 365 * 24, 52 and 12 rows respectively for quicker db update vs db insert
+        """ Prepopulate DayGraphTable, WeekGraphTable, and MonthGraphTable with 365 * 24, 52, and 12 rows respectively for quicker db update vs db insert
         TODO IS AN UPDATE FASTER THEN AN INSERT IN SQLITE????
 
         """
         # Each day has 24 hours with 24 different values of 0000 to 2300 for 365 days per year (leap years ignored)
-        for hourNumber in range(100, 2400, 100):
-            for dayNumber in range(1, 366):
+        for dayNumber in range(1, 366):
+            for hourNumber in range(0, 2400, 100):
                 self.insert_day_graph_table(0, 0, 0, hourNumber, dayNumber)
 
         # Each year has 52 weeks
@@ -114,7 +133,6 @@ class Database:
             self.insert_month_graph_table(0, 0, 0, monthNumber)
 
 
-    #TODO UPDATE NEXT THREE FUNCTIONS WITH MATCH DB DEFINTATIONS
     def insert_day_graph_table(self, o2: int, co2: int, wH: int, hourOfDayNum: int, dayOfYr: int):
         """ Insert sensor data, energy usage, and timestamp info into a day to day table that overwrites every 365 days
 
@@ -125,17 +143,17 @@ class Database:
             hourOfDayNum (Integer): Each day has 24 hours with 23 different values of 0000 to 2300, in increments of 0100
             dayOfYr (Integer): TODO IS THIS A VALID VARIABLE TO GET FROM DATETIME() STANDARD LIBRARY? TODO
         """
-        self.conn.execute("INSERT INTO DayGraphTable(o2level, co2level, wattHours, hourOfDayNumber, dayOfYear) VALUES (?, ?, ?, ?, ?)", (o2, co2, wH, hourOfDayNum, dayOfYr))
+        self.conn.execute("INSERT INTO DayGraphTable(o2_level, co2_level, watt_hours, hour_of_day_number, day_of_year) VALUES (?, ?, ?, ?, ?)", (o2, co2, wH, hourOfDayNum, dayOfYr))
         self.commit_changes()
 
 
     def insert_week_graph_table(self, o2: int, co2: int, wH: int, weekNum: int):
-        self.conn.execute("INSERT INTO WeekGraphTable(o2level, co2level, wattHours, weekNumber) VALUES (?, ?, ?, ?)", (o2, co2, wH, weekNum))
+        self.conn.execute("INSERT INTO WeekGraphTable(o2_level, co2_level, watt_hours, week_number) VALUES (?, ?, ?, ?)", (o2, co2, wH, weekNum))
         self.commit_changes()
 
 
     def insert_month_graph_table(self, o2: int, co2: int, wH: int, monthNum: int):
-        self.conn.execute("INSERT INTO MonthGraphTable(o2level, co2level, wattHours, monthNumber) VALUES (?, ?, ?, ?)", (o2, co2, wH, monthNum))
+        self.conn.execute("INSERT INTO MonthGraphTable(o2_level, co2_level, watt_hours, month_number) VALUES (?, ?, ?, ?)", (o2, co2, wH, monthNum))
         self.commit_changes()
 
 
@@ -149,9 +167,9 @@ class Database:
         """ Close database to enable another local sqlite3 OR online libsql instance to query a *.db database
         """
         if self.dbOnline:
-            pass #TODO
+            pass #self.cursor.close()
         else:
-            self.conn.close()
+            self.cursor.close()
 
 
     def get_date_time(self) -> datetime:
@@ -404,28 +422,40 @@ class Database:
 if __name__ == "__main__":
     print("Testing Database.py")
 
-    isOnline = True
-    db = Database('UnitTest.db', isOnline)
+    print("Creating local database")
+    isOnline = False
+    db1 = Database('UnitTest.db', isOnline)
 
-    date = db.get_date_time()
+    print("Creating online database")
+    isOnline = True
+    db2 = Database('strongbox-gui-db.db', isOnline)
+
+    date = db1.get_date_time()
     isoDateDay = date.isoformat()[0:10]
-    #CraterTable (id INTEGER PRIMARY KEY, humanCraterName TEXT, craterDiameterMeters REAL, latitude REAL, longitude REAL, timestamp TEXT)
+    dateObj = datetime.strptime(isoDateDay, "%Y-%m-%d")
 
     oxygenLevel = 0             # Units are milliBar Plants have not started converting CO2 to O2
     carbonMonoxideLevel = 7     # Units are milliBar (Mars atomsphereic pressure is 7 milliBar on average
     powerDraw = 0               # Units are watt-Hours
     missionStartHour = 1600     # Units of 24-hour clock, so 4 pm
-    dayOfYear = 300
-    db.insert_day_graph_table(oxygenLevel, carbonMonoxideLevel, powerDraw, missionStartHour, dayOfYear)
+    dayOfYear = dateObj.timetuple().tm_yday
 
-    results = db.query_table("CraterTable", "Shackelton Crater")
+    print(f"ISO-8601 Date is: {isoDateDay} ")
+    print(f"Day of the year is: {dayOfYear} ")
+
+    db1.insert_day_graph_table(oxygenLevel, carbonMonoxideLevel, powerDraw, missionStartHour, dayOfYear)
+
+    results = db2.query_table("CraterTable", "Shackelton Crater")
     if GC.DEBUG_STATEMENTS_ON: print(results)
+
+
+    """
+    CraterTable (id INTEGER PRIMARY KEY, humanCraterName TEXT, craterDiameterMeters REAL, latitude REAL, longitude REAL, timestamp TEXT)
 
     primaryKey = 69
     results = db.query_table("CraterTable", str(primaryKey))
     if GC.DEBUG_STATEMENTS_ON: print(results)
 
-    """
     db.export_table_to_csv(["DailyEnergyTable", "WeeklyEnergyTable", "MonthlyEnergyTable", "WeekGraphTable", "MonthGraphTable", "DebugLoggingTable"])
 
     insertErrors = db.insert_check_in_table(1001)
@@ -434,4 +464,4 @@ if __name__ == "__main__":
     print(insertErrors)
     """
 
-    db.close_database()
+    db1.close_database()
