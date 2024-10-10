@@ -1,14 +1,19 @@
+import GlobalConstants as GC
+
 # pip install opencv-python
 import cv2
 
 # pip install libusb1
+# usb1 is Python wrapper for libusb, a C library that provides generic access to USB devices.
 import usb1
 
 
 class Camera:
 
-    def __init__(self, serialNumber: str):
+    def __init__(self):
         self.numOfPhotos = 1
+        self.serialNumber = Camera.get_serial_number()
+
 
     def get_serial_number():
         # Initialize libusb context
@@ -49,7 +54,7 @@ class Camera:
         if ret:
             # Save the captured frame as an image
             cv2.imwrite(f"iPhoneImage{self.numOfPhotos}.jpg", frame)
-            print(f"Image #{self.numOfPhotos} captured and saved successfully")
+            print(f"Image #{self.numOfPhotos} captured and saved successfully from camera serial #{self.serialNumber}")
             self.numOfPhotos = self.numOfPhotos + 1
         else:
             print("Failed to capture image")
@@ -57,9 +62,23 @@ class Camera:
         # Release the camera
         camera.release()
 
+
 if __name__ == "__main__":
-    cameraObj = Camera(Camera.get_serial_number())
-    cameraObj.take_picture()
-    cameraObj.take_picture()
-    cameraObj.take_picture()
+    cameras = []
+    for i in range(GC.NUMBER_OF_CAMERAS):
+        camera = Camera() 
+        cameras.append(camera)
+                  
+    cameras[0].take_picture()
+    cameras[0].take_picture()
+    cameras[0].take_picture()
+    cameras[1].take_picture()
+    cameras[2].take_picture()
+    cameras[3].take_picture()
+    cameras[4].take_picture()
+    cameras[5].take_picture()
+    cameras[6].take_picture()
+    cameras[7].take_picture()
+    cameras[8].take_picture()
+    cameras[9].take_picture()
 
