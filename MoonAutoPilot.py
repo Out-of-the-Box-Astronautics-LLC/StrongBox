@@ -148,7 +148,7 @@ class MoonAutoPilot:
         # param2:    Accumulator threshold for the circle centers at the detection stage. A larger value means that a higher number of supporting points are required to detect a circle.
         # minRadius: This parameter specifies the minimum radius of the circles to be detected. Circles with a radius smaller than this value will not be detected.
         # maxRadius: This parameter specifies the maximum radius of the circles to be detected. Circles with a radius larger than this value will not be detected. If set to 0, it means there is no maximum limit.
-        circles = cv2.HoughCircles(grayScaleImageBlurred, cv2.HOUGH_GRADIENT, dp=1, minDist=100, param1=100, param2=30, minRadius=int(MoonAutoPilot.MIN_CRATER_PIXEL_DIAMETER/2), maxRadius=0)
+        circles = cv2.HoughCircles(grayScaleImageBlurred, cv2.HOUGH_GRADIENT, dp=10, minDist=1, param1=10, param2=40, minRadius=5, maxRadius=int(MoonAutoPilot.MIN_CRATER_PIXEL_DIAMETER))
 
         if circles is not None:
             circleFound = True
@@ -156,10 +156,11 @@ class MoonAutoPilot:
             # Convert the circle parameters to integers
             circles = np.round(circles[0, :]).astype("int")
 
-            # Loop over the circles and draw them on the original image
-            for (x, y, r) in circles:
+            # Loop over the first THREE circles and draw them on the original image
+            for (x, y, r) in circles[:10]:
                 cv2.circle(image, (x, y), r, (0, 255, 0), 4)
-                cv2.rectangle(image, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+                #cv2.rectangle(image, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
+                print(f"Crater ? at {int(x), int(y)} appears to have radius of {r} meters")
 
             # Show the output image with the detected circles
             if GC.DEBUG_STATEMENTS_ON:
@@ -265,7 +266,8 @@ class MoonAutoPilot:
 
     def unit_test(self):
         currentDirectory = os.getcwd()
-        img = cv2.imread(currentDirectory + '/static/images/NearSurveyor6_HeightUnknown.png', MoonAutoPilot.RGB_MODE)
+        #img = cv2.imread(currentDirectory + '/static/images/NearSurveyor6_HeightUnknown.png', MoonAutoPilot.RGB_MODE)
+        img = cv2.imread(currentDirectory + '/static/images/MoonLat0_Long0.png', MoonAutoPilot.RGB_MODE)
         test.find_crater_centers(img)
         test.show_image_for_debugging("Moon AutoPilot v0.1" , img)
 

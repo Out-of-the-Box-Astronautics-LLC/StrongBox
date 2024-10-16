@@ -25,7 +25,6 @@ __version__    = "0.0.1"
 import sys          	# Used to determine which OS (MacOS, Linux, or Windows) code is running on
 from time import sleep	# Used to program pause execution
 
-
 ## 3rd Party Libraries
 # Browser base GUI framework to build and display a user interface mobile, PC, and Mac
 # https://nicegui.io/
@@ -41,7 +40,7 @@ from dotenv import dotenv_values
 import GlobalConstants as GC    # Useful global constants used across multiple files
 import Crater as cr             # Crater class to define name, size, and location of craters
 import Database as db           # SQLite database to store crate locations
-
+import Camera			# Image capture code using USB attached cameras
 
 ## Global Variables
 # Application boots up in light mode
@@ -58,8 +57,23 @@ def set_background(color: str) -> None:
     ui.query('body').style(f'background-color: {color}')
 
 
-def page_refresh():
+def page_refresh(cameras):
     set_background(GC.STRONG_BOX_GREEN)
+            
+    cameraA0image.source = cameras[0].take_picture()
+    sleep(0.010)
+    cameraA90image.source = cameras[0].take_picture()
+    sleep(0.010)
+    cameraA180image.source = cameras[0].take_picture()
+    sleep(0.010)
+    cameraA270image.source = cameras[0].take_picture()
+
+    print(f"Total number of images taken is {cameras[0].numOfPhotos}")
+
+    cameraA0image.update()
+    cameraA90image.update()
+    cameraA180image.update()
+    cameraA270image.update()
 
 
 if __name__ in {"__main__", "__mp_main__"}:
@@ -67,9 +81,14 @@ if __name__ in {"__main__", "__mp_main__"}:
 
     db1 = db.Database("strongbox-gui-db.db")
 
+    cameras = []
+    for i in range(GC.NUMBER_OF_CAMERAS):
+        newCamera = Camera.Camera()
+        cameras.append(newCamera)
+
     #ui.timer(GC.GUI_PAGE_REFRESH_RATE, lambda: set_background(GC.STRONG_BOX_GREEN))
     with ui.row().classes("self-center"):
-        ui.button("PAGE REFRESH", on_click=lambda e: page_refresh())
+        ui.button("PAGE REFRESH", on_click=lambda e: page_refresh(cameras))
 
 
     if __name__ == "__main__":
@@ -77,49 +96,26 @@ if __name__ in {"__main__", "__mp_main__"}:
         # apiBackgroundProcessCode = start_api()
         pass
 
-    # Incoming APIs
+    # Incoming APIs URL's and keys
     try:
         config = dotenv_values()
         url = config['STRONG_BOX_GUI_DB_URL']
         key = config['STRONG_BOX_GUI_DB_TOKEN']
 
-        # Create directory and URL for local storage of images
-        if sys.platform.startswith('darwin'):
-            app.add_static_files('/static/images', GC.MAC_CODE_DIRECTORY +'/static/images')
-            app.add_static_files('/static/videos', GC.MAC_CODE_DIRECTORY + '/static/videos')
-        elif sys.platform.startswith('linux'):
-            app.add_static_files('/static/images', GC.LINUX_CODE_DIRECTORY + '/static/images')
-            app.add_static_files('/static/videos', GC.LINUX_CODE_DIRECTORY + '/static/videos')
-        elif sys.platform.startswith('win'):
-            print("WARNING: Running GUI.py code on Windows OS is NOT fully supported")
-            app.add_static_files('/static/images', GC.WINDOWS_CODE_DIRECTORY + '/static/images')
-            app.add_static_files('/static/videos', GC.WINDOWS_CODE_DIRECTORY + '/static/videos')
-        else:
-            print("ERROR: Running on an unknown operating system")
-            quit()
-
     except KeyError:
-        pass
         db1.insert_debug_logging_table("ERROR: Could not find .ENV file when calling dotenv_values()")
 
 
     finally:
         pass
-        #url = config['STRONG_BOX_GUI_DB_URL']
-        #key = config['STRONG_BOX_GUI_DB_TOKEN']
 
 
     if GC.DEBUG_STATEMENTS_ON: print(f"Font size was set to: {textFontSize}")
 
-    # Eight HD 720p (1280 × 720) or 4K UHD (3840 × 2160) cameras on the corners of the A & B sides of a Strong Box cube in two 3 x 3 grids (for MVP. Mission code with stitch into two circles)
-    lastFramesA = [GC.LAST_FRAMES+"A0.jpeg", GC.LAST_FRAMES+"A1.jpeg", GC.LAST_FRAMES+"A2.jpeg", GC.LAST_FRAMES+"A3.jpeg"]
-    lastFramesB = [GC.LAST_FRAMES+"B0.jpeg", GC.LAST_FRAMES+"B1.jpeg", GC.LAST_FRAMES+"B2.jpeg", GC.LAST_FRAMES+"B3.jpeg"]
-    currentFramesA = [GC.CURRENT_FRAMES+"A0.jpeg", GC.CURRENT_FRAMES+"A1.jpeg", GC.CURRENT_FRAMES+"A2.jpeg", GC.CURRENT_FRAMES+"A3.jpeg"]
-    currentFramesB = [GC.CURRENT_FRAMES+"B0.jpeg", GC.CURRENT_FRAMES+"B1.jpeg", GC.CURRENT_FRAMES+"B2.jpeg", GC.CURRENT_FRAMES+"B3.jpeg"]
-
     with ui.footer(value=True) as footer:
         ui.label('Strong Box: Air Plant One Mission').style(f"font-size: 25px;")
 
+    # Eight HD 720p (1280 × 720) or 4K UHD (3840 × 2160) cameras on the corners of the A & B sides of a Strong Box cube in two 3 x 3 grids (for MVP. Mission code with stitch into two circles)
     # A0 is the image on the A side of Strong Box hardware, displayed at 0 degrees (on compass which is North) on GUI
     # B270 os the image on the B side of Strong Box hardware, displayed at 270 degrees (on compass which is West) on GUI
     with ui.grid(columns=3).classes("self-center"):

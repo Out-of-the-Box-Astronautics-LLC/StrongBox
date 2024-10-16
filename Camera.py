@@ -7,11 +7,12 @@ import cv2
 # usb1 is Python wrapper for libusb, a C library that provides generic access to USB devices.
 import usb1
 
+import time
 
 class Camera:
 
     def __init__(self):
-        self.numOfPhotos = 1
+        self.numOfPhotos = 0
         self.serialNumber = Camera.get_serial_number()
 
 
@@ -51,16 +52,18 @@ class Camera:
         # Capture a single frame
         ret, frame = camera.read()
 
-        if ret:
-            # Save the captured frame as an image
-            cv2.imwrite(f"iPhoneImage{self.numOfPhotos}.jpg", frame)
-            print(f"Image #{self.numOfPhotos} captured and saved successfully from camera serial #{self.serialNumber}")
-            self.numOfPhotos = self.numOfPhotos + 1
-        else:
+        if not ret:
             print("Failed to capture image")
-
+        
+        # Save the captured frame as an image
+        imageFileName = f"/Users/pluto/GitRepos/StrongBox/static/images/iPhoneImage{self.numOfPhotos}_{int(time.time())}.jpg"
+        cv2.imwrite(imageFileName, frame)
+        print(f"{imageFileName} captured and saved successfully from camera serial #{self.serialNumber}")
+        self.numOfPhotos = self.numOfPhotos + 1
+        
         # Release the camera
         camera.release()
+        return imageFileName
 
 
 if __name__ == "__main__":
