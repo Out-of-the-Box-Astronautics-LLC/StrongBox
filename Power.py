@@ -29,12 +29,14 @@ from sense_energy import Senseable
 # https://pypi.org/project/python-dotenv/
 from dotenv import dotenv_values
 
+
 ## Internally Developed Library
 import GlobalConstants as GC                # Useful global constants used across multiple files
 from Database import Database               # Store non-Personally Identifiable Information in local (TODO Turso server) SQlite database
 
 
 class Power:
+
 
     def __init__(self, partId: str, isPowerSource: bool, minWattage: float, maxWattage: float, currentVoltage: float, currentAmpDraw: float):
         """ Constructor to initialize a Power.py object
@@ -62,6 +64,7 @@ class Power:
         self.senseAPI = Senseable()
 
         self.db = Database('Power.db')
+
 
     def __repr__(self):
         """ Object "Representation" of Power.py Class (https://www.geeksforgeeks.org/python-__repr__-magic-method)

@@ -124,15 +124,15 @@ if __name__ in {"__main__", "__mp_main__"}:
         ui.label("").style(f"width: {imageWidth}px;")
 
         blankImageCellInGrid = ui.image('')
-        cameraA0image = ui.image(GC.TEST_IMAGE)
+        cameraA0image = ui.image(GC.TEST_IMAGE_A)
         blankImageCellInGrid = ui.image('')
 
-        cameraA270image = ui.image(GC.TEST_IMAGE)
+        cameraA270image = ui.image(GC.TEST_IMAGE_A)
         ui.label(f"SIDE A CAMERA'S: {frameRate} Hz").style(f"width: {imageWidth}px; font-size: {textFontSize}px; display: flex; justify-content: center; align-items: center;")
-        cameraA90image = ui.image(GC.TEST_IMAGE)
+        cameraA90image = ui.image(GC.TEST_IMAGE_A)
 
         blankImageCellInGrid = ui.image('')
-        cameraA180image = ui.image(GC.TEST_IMAGE)
+        cameraA180image = ui.image(GC.TEST_IMAGE_A)
         blankImageCellInGrid = ui.image('')
 
     with ui.grid(columns=3).classes("self-center"):
@@ -141,15 +141,15 @@ if __name__ in {"__main__", "__mp_main__"}:
         ui.label("").style(f"width: {imageWidth}px;")
 
         blankImageCellInGrid = ui.image('')
-        cameraB0image = ui.image(GC.TEST_IMAGE)
+        cameraB0image = ui.image(GC.TEST_IMAGE_B)
         blankImageCellInGrid = ui.image('')
 
-        cameraB270image = ui.image(GC.TEST_IMAGE)
+        cameraB270image = ui.image(GC.TEST_IMAGE_B)
         ui.label(f"SIDE B CAMERA'S: {frameRate} Hz").style(f"width: {imageWidth}px; font-size: {textFontSize}px; display: flex; justify-content: center; align-items: center;")
-        cameraB90image = ui.image(GC.TEST_IMAGE)
+        cameraB90image = ui.image(GC.TEST_IMAGE_B)
 
         blankImageCellInGrid = ui.image('')
-        cameraB180image = ui.image(GC.TEST_IMAGE)
+        cameraB180image = ui.image(GC.TEST_IMAGE_B)
         blankImageCellInGrid = ui.image('')
 
     ui.run()

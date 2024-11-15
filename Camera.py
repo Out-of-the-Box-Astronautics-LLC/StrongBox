@@ -20,7 +20,7 @@ class Camera:
         # Initialize libusb context
         try:
             with usb1.USBContext() as context:
-                # Open the iPhone 14 Pro Max Camera as USB device by Vendor ID and Product ID (Bus 002 Device 004: ID 05ac:12a8)
+                # Open the iPhone 14 Pro Max Camera as USB device by Vendor ID and Product ID (Bus 002 Device 004: ID 05ac:12a8) found using 'lsusb' command
                 handle = context.openByVendorIDAndProductID(0x05AC, 0x12A8)
                 
                 if handle is None:
@@ -57,6 +57,7 @@ class Camera:
         
         # Save the captured frame as an image
         imageFileName = f"/Users/pluto/GitRepos/StrongBox/static/images/iPhoneImage{self.numOfPhotos}_{int(time.time())}.jpg"
+        #imageFileName = f"/Users/pluto/GitRepos/StrongBox/static/images/iPhoneImage{self.numOfPhotos}_{int(time.time())}_{self.serialNumber}.jpg"
         cv2.imwrite(imageFileName, frame)
         print(f"{imageFileName} captured and saved successfully from camera serial #{self.serialNumber}")
         self.numOfPhotos = self.numOfPhotos + 1

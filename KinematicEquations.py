@@ -13,16 +13,19 @@ __doc__        = "Calculate unknown value(s) of motion using 5 kinematic equatio
 ## Standard Library
 from math import pow, sqrt, pi
 
+
 ## 3rd Party Libraries
 # TODO Robot arm inverse & forward kinematics
 # https://pypi.org/project/visual-kinematics/
 # from visual_kinematics.RobotTrajectory import *
+
 
 ## Internally Developed Library
 import GlobalConstants as GC
 
 
 class KinematicEquations:
+
 
     def __init__(self, velocityFinal: float, velocityInitial: float, time: float, deltaDistance: float, acceleration: float):
         """ Constructor to initialize a KinematicEquations.py object
@@ -174,37 +177,37 @@ class KinematicEquations:
 
     def calculate_potential_energy(mass: float, gravity: float, height: float):
         """ Calculate the potential energy (PE) an item has
-        
+
         Arg(s):
             mass (Float): Mass in kilograms
             gravity (Float): Acceleration dur to gravity in meters per seconds per second
             height (Float): Scalar distance in meters above a reference point
         """
-        return (mass * gravity * height) 
+        return (mass * gravity * height)
 
 
     def calculate_kinetic_energy(mass: float, velocity: float):
         """ Calculate the kinetic energy (KE) an item has
-        
+
         Arg(s):
             mass (Float): Mass in kilograms
             velocity (Float): Scalar velocity in meters per second
         """
-        return (0.5 * mass * velocity * velocity) 
+        return (0.5 * mass * velocity * velocity)
 
-    
+
     def unit_test():
         """ Checked using the following online calculators
-
+	    https://www.satsig.net/orbit-research/orbit-height-and-speed.htm
             https://physicscatalyst.com/calculators/physics/kinematics-calculator.php
             https://study.com/academy/lesson/kinematic-equations-list-calculating-motion.html
         """
         deltaDistance = 111.0 - 0.0
         answer1 = KinematicEquations("?", 0.0, "?", 111.0, GC.G_EARTH)
-        print(f"Vf = {answer1.vf} | Vi = {answer1.vi} | Time = {answer1.t} | Displacement = {answer1.dd} | Accel = {answer1.a}")
+        print(f"Earth Drop test from 111 meters: Vf = {answer1.vf} | Vi = {answer1.vi} | Time = {answer1.t} | Displacement = {answer1.dd} | Accel = {answer1.a}")
 
-        answer2 = KinematicEquations(44.69, 571.0, "?", 319_000.0, GC.G_MOON)
-        print(f"Vf = {answer2.vf} | Vi = {answer2.vi} | Time = {answer2.t} | Displacement = {answer2.dd} | Accel = {answer2.a}")
+        answer2 = KinematicEquations(44.69, 1633.80, "?", 100_000.0, GC.G_MOON)
+        print(f"Moon Burn Time from 100 km: Vf = {answer2.vf} | Vi = {answer2.vi} | Time = {answer2.t} | Displacement = {answer2.dd} | Accel = {answer2.a}")
 
         xVelocity = 5.03
         yVelocity = 20.10

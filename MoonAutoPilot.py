@@ -26,6 +26,7 @@ import sys                                      # Determine which OS this code i
 from datetime import datetime, time, timedelta  # Manipulate calendar dates & time objects https://docs.python.org/3/library/datetime.html
 import traceback				# Extract, format and print stack traces of a python program, mimicing python interpreter
 import os                                       # Allow program to extract filename of the current file
+import math					# Calculate tan()
 
 ## 3rd party libraries
 # OpenCV (Open Source Computer Vision Library) for computer vision and machine learning https://opencv.org
@@ -156,11 +157,20 @@ class MoonAutoPilot:
             # Convert the circle parameters to integers
             circles = np.round(circles[0, :]).astype("int")
 
-            # Loop over the first THREE circles and draw them on the original image
-            for (x, y, r) in circles[:10]:
+            # Loop over the circles and draw #5 them on the original image
+            for (x, y, r) in circles[4:5]:
                 cv2.circle(image, (x, y), r, (0, 255, 0), 4)
                 #cv2.rectangle(image, (x - 5, y - 5), (x + 5, y + 5), (0, 128, 255), -1)
-                print(f"Crater ? at {int(x), int(y)} appears to have radius of {r} meters")
+
+            w = 540*156  # real-world width in meters
+            fov_degrees = 45  # example field of view in degrees
+
+            # Convert FOV to radians
+            fov_radians = math.radians(fov_degrees)
+ 
+            # Calculate the distance using the formula
+            h = w / (2 * math.tan(fov_radians / 2))      
+            print(f"Crater ? at {int(x), int(y)} appears to have diameter of {2*r} pixels = {156*r} meters, so your altitude is {h} meters")
 
             # Show the output image with the detected circles
             if GC.DEBUG_STATEMENTS_ON:

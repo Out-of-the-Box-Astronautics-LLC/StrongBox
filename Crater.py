@@ -54,7 +54,7 @@ class Crater:
 
         # Check that latitude & longitude input parameters are valid East/West and North/South values
         if 180 >= location[2] and locatiom[2] >= -180:
-            self.latitude = location[2]                 # Units are decimal arc degrees
+            self.longitude = location[2]                 # Units are decimal arc degrees
         else:
             if GC.DEBUG_STATEMENTS_ON: print("TODO")
             return
@@ -66,20 +66,20 @@ class Crater:
             return
 
 
-    def get_offical_name() -> str:
+    def get_offical_name(self) -> str:
         if self.name == "":
-            if GC.DEBUG_STATEMENTS_ON: print("TODO")
+            if GC.DEBUG_STATEMENTS_ON: print(f"Crater at ({self.latitude}, {self.longitude}) doesn't have an offical name.")
             return None
         else:
             return self.name
 
 
-    def get_diameter() -> float:
+    def get_diameter(self) -> float:
         return self.diameter        # Units are meters
 
 
 
-    def get_lat_long_position() -> tuple:
+    def get_lat_long_position(self) -> tuple:
         """ Get Moon 'GPS' coordinate of crater 'center'
 
         Arg(s):
@@ -95,7 +95,7 @@ class Crater:
         return (lat, long)
 
 
-    def get_x_y_position() -> tuple:
+    def get_x_y_position(self) -> tuple:
         """ Get Moon 'GPS' coordinate of crater 'center'
 
         Arg(s):
