@@ -18,6 +18,11 @@ from math import pow, sqrt, pi
 # https://pypi.org/project/visual-kinematics/
 # from visual_kinematics.RobotTrajectory import *
 
+# PhysiPy is a powerful and versatile Python library designed to streamline physics calculations
+# https://github.com/rohankishore/PhysiPy
+import PhysiPy
+
+
 ## Internally Developed Library
 import GlobalConstants as GC
 
