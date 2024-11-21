@@ -202,10 +202,13 @@ class KinematicEquations:
 
     def unit_test():
         """ Checked using the following online calculators
-	    https://www.satsig.net/orbit-research/orbit-height-and-speed.htm
+	        https://www.satsig.net/orbit-research/orbit-height-and-speed.htm
             https://physicscatalyst.com/calculators/physics/kinematics-calculator.php
             https://study.com/academy/lesson/kinematic-equations-list-calculating-motion.html
         """
+        assert 20 == calculate_kinetic_energy(10.0, 2.0), "Error in static calculate_kinetic_energy() function"
+        assert 33.10875 == calculate_potential_energy(1.5, 9.81 2.25), "Error in static calculate_potential_energy() function"
+        
         deltaDistance = 111.0 - 0.0
         answer1 = KinematicEquations("?", 0.0, "?", 111.0, GC.G_EARTH)
         print(f"Earth Drop test from 111 meters: Vf = {answer1.vf} | Vi = {answer1.vi} | Time = {answer1.t} | Displacement = {answer1.dd} | Accel = {answer1.a}")
