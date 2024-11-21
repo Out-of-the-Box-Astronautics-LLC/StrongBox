@@ -15,7 +15,7 @@ Figure 1 - [OnShape 3D Model](https://cad.onshape.com/documents/cacba11fc1121841
 ## 2024 Test Plan:
 1) Lift Strong Box to ~333 feet (on Earth) using a 15K USD crane or rented large drone to simulate a 100 mph terminal velocity impact on the Moon (See math [HERE](https://github.com/OpenSourceIronman/StrongBox/blob/main/KinematicEquations.py))
 2) 12 x 12 x 12 foot vacuum chamber pod (from Moe Build LLC) with JSC-1A lunar regolith, vanta black painted sky, and [11.69 kW Halogen spotlight](https://www.desisti.it/wp-content/uploads/2017/10/ds_SuperLeo_10_12kw.pdf) (sun sim) to test computer vision code on a [MIL-SPEC NVIDIA AGX](https://systelusa.com/products/kite-strike-ii/)
-3) Test fire suicide burn with small [Sugar &  Potassium  Nitrite (KNO3)](https://www.youtube.com/watch?v=12fR9neVnS8) solid rocket engine with impluse of 159 N*s <br> <br>
+3) Test fire suicide burn with small [Sugar &  Potassium  Nitrite (KNO3)](https://www.youtube.com/watch?v=12fR9neVnS8) solid rocket engine with impluse of 159 N*s after simulating landing in [OpenRocket](https://github.com/openrocket/openrocket) <br> <br>
 
 ## 2025 Test Plan:
 1) Hang Strong Box inside a 12 x 12 x 12 foot vacuum chamber pod to test [CO2 based four nozzle cold gas thruster](https://digitalcommons.usu.edu/cgi/viewcontent.cgi?article=2111&context=smallsat) 
