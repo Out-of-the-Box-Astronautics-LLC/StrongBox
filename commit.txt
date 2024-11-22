@@ -1,0 +1,10 @@
+git commit -m "Improve functionality, readability, and overall maintainability across modules.
+
+- Camera.py: Enhanced comments for USB device connection details and added an optional image filename format with serial number.
+- Crater.py: Fixed bug in latitude/longitude assignment and added self parameter to class methods for proper instance handling.
+- GUI.py: Updated image references for better testing and clarity, replacing GC.TEST_IMAGE with specific images for sides A and B.
+- GlobalConstants.py: Added new constants TEST_IMAGE_A and TEST_IMAGE_B for specific image references.
+- KinematicEquations.py: Improved examples in unit_test() and adjusted parameter values for realistic scenarios.
+- MoonAutoPilot.py: Added altitude calculation using camera FOV and real-world crater width.
+- Power.py: Added spacing for improved readability.
+- static/images: Removed TestImageApollo16_1920x1080.jpeg to declutter the repository."
