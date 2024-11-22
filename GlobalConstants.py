@@ -11,7 +11,7 @@ __version__    = "0.0.1"
 TODO = -1
 # Useful CONSTANTS for the Strong Box moon mission
 
-DEBUG_STATEMENTS_ON = True
+DEBUG_STATEMENTS_ON = False
 
 # Physical elements inside a Strong Box
 NUMBER_OF_ROCKET_ENGINES = 1
