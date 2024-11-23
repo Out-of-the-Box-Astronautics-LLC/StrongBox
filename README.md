@@ -7,7 +7,7 @@ Only human life has ventured to explore the Moon. Let’s bring new beauty and l
 Figure 1 - [OnShape 3D Model](https://cad.onshape.com/documents/cacba11fc11218410109af04/w/7b08a85a08780e93463eb959/e/872990c4698391915117e37a?renderMode=0&uiState=66000f30184b572b8a06ffd5) of the internal Strong Box frame, 6 in x 6 in and 0.25 inch thick 304L HSS <br> <br>
 
 
-## The Air Plant One mission using the Strong Box produxt by 'Out of the Box Astronautics LLC' has three main objectives:
+## The Air Plant One mission using the Strong Box product by 'Out of the Box Astronautics LLC' has three main objectives:
 1) Embark on a pioneering journey to bring the vibrancy of terrestrial plant life to the Moon’s stark, grey landscape. Our mission is to sustain life in an extraterrestrial environment for at least 13.65 Earth days, capturing and sharing stunning images of thriving greenery against the Moon’s mystical backdrop with the world. This endeavor is not just about proving survival, but also about inspiring awe and wonder.
 2) Lay the foundation for a lunar base by scaling our Strong Box from a compact 2 x 2 x 2 feet (60.9 x 60.9 x 60.9 cm)  to an expansive 12 x 12 x 12 feet (365 x 365 x 365 cm) with workng HVAC / enviromental control. Utilize the formidable capabilities of the SpaceX Starship to accomplish this monumental task, signaling a new era of lunar colonization.
 3) Demonstrate the feasibility of a semi-hard lunar landing at approximately 100.0 mph (160.9 km/h = 44.69 m/s), using a single solid rocket engine, CO2 based cold gas thrusters, and camera based computer vision. This innovative approach promises to revolutionize lunar exploration, offering a cost-effective, efficient, and thrilling new pathway to uncover the secrets of the Moon. <br> <br>
@@ -15,7 +15,9 @@ Figure 1 - [OnShape 3D Model](https://cad.onshape.com/documents/cacba11fc1121841
 ## 2024 Test Plan:
 1) Lift Strong Box to ~333 feet (on Earth) using a 15K USD crane or rented large drone to simulate a 100 mph terminal velocity impact on the Moon (See math [HERE](https://github.com/OpenSourceIronman/StrongBox/blob/main/KinematicEquations.py))
 2) 12 x 12 x 12 foot vacuum chamber pod (from Moe Build LLC) with JSC-1A lunar regolith, vanta black painted sky, and [11.69 kW Halogen spotlight](https://www.desisti.it/wp-content/uploads/2017/10/ds_SuperLeo_10_12kw.pdf) (sun sim) to test computer vision code on a [MIL-SPEC NVIDIA AGX](https://systelusa.com/products/kite-strike-ii/)
-3) Test fire suicide burn with small [Sugar &  Potassium  Nitrite (KNO3)](https://www.youtube.com/watch?v=12fR9neVnS8) solid rocket engine with impluse of 159 N*s after simulating landing in [OpenRocket](https://github.com/openrocket/openrocket) <br> <br>
+3) Test fire suicide burn with small [Sugar &  Potassium  Nitrite (KNO3)](https://www.youtube.com/watch?v=12fR9neVnS8) solid rocket engine with impluse of 159 N*s 
+4) use [OpenRocket](https://github.com/openrocket/openrocket) to determine biggest solid rocket motor useable for this mission. 
+4) Simulate landing using a custom plug in for [Kerbal Space Program]()   <br> <br>
 
 ## 2025 Test Plan:
 1) Hang Strong Box inside a 12 x 12 x 12 foot vacuum chamber pod to test [CO2 based four nozzle cold gas thruster](https://digitalcommons.usu.edu/cgi/viewcontent.cgi?article=2111&context=smallsat) 
