@@ -18,9 +18,10 @@ strongbox-gui-db.db-wal
 __pycache__
 *.swp
 
-# Build directories to ignore
+# Build and image directories to ignore
 OpenCV_Download_Build_Directory/
+static/images/
 
-# Send this file to ChatGPT to write useful git commit messages 
+# Send this file to ChatGPT to write useful git commit messages
 diff.txt
 .vscode/settings.json
