@@ -15,12 +15,10 @@ from math import pow, sqrt, pi
 
 
 ## 3rd Party Libraries
-# TODO Robot arm inverse & forward kinematics
-# https://pypi.org/project/visual-kinematics/
-# from visual_kinematics.RobotTrajectory import *
+# NONE
 
 
-## Internally Developed Library
+## Internally Developed Libraries
 import GlobalConstants as GC
 
 
@@ -34,9 +32,9 @@ class KinematicEquations:
             self: Newly created KinematicEquations object
             velocityFinal   (Float): A +/- scalar velocity of an item slower then 100 km/s
             velocityInitial (Float): A +/- scalar velocity of an item slower than 100 km/s
-            time (Float): Positive time value less than 100,000,000 seconds
-            deltaDistance (Float): A +/- scalar displacement of an item less than 200,000,00 km
-            acceleration (Float): A +/- scalar change in velocity in units of meters per second per secnds, decceleration against gravity is negative
+            time            (Float): Positive time values less than 100,000,000 seconds
+            deltaDistance   (Float): A +/- scalar displacement of an item less than 200,000,00 km
+            acceleration    (Float): A +/- scalar change in velocity in units of meters per second per second, deceleration against gravity is negative
 
         Instance Variable(s):
            isValid (Boolean): Is the input list of arguments enough to solve the 5 equations?
@@ -204,18 +202,18 @@ class KinematicEquations:
         """
         assert 20 == KinematicEquations.calculate_kinetic_energy(10.0, 2.0), "Error in static calculate_kinetic_energy() function"
         assert 33.10875 == KinematicEquations.calculate_potential_energy(1.5, 9.81, 2.25), "Error in static calculate_potential_energy() function"
-        
+
 
         deltaDistance = 111.0 - 0.0
         answer1 = KinematicEquations("?", 0.0, "?", 111.0, GC.G_EARTH)
         errorMessage = f"Earth Drop test from 111 meters: Vf = {answer1.vf} | Vi = {answer1.vi} | Time = {answer1.t} | Displacement = {answer1.dd} | Accel = {answer1.a}"
         assert round(answer1.vf, 3) == GC.TODO, errorMessage
-        
+
 
         answer2 = KinematicEquations(44.69, 1633.80, "?", 100_000.0, GC.G_MOON)
         errorMessage = f"Moon Burn Time from 100 km: Vf = {answer2.vf} | Vi = {answer2.vi} | Time = {answer2.t} | Displacement = {answer2.dd} | Accel = {answer2.a}"
         assert round(answer2.t, 3) == GC.TODO, errorMessage
-       
+
 
         xVelocity = 5.03
         yVelocity = 20.10
