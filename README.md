@@ -49,6 +49,10 @@ TODO <br>
 # Why open source?
 The adoption of open source hardware offers numerous benefits for society and companies alike, providing a model that encourages innovation, collaboration, and accessibility. Here’s why open source hardware is beneficial:
 
+## External GitHub Repos Used - Thanks!
+1) PhysiPy: https://github.com/rohankishore/PhysiPy
+
+
 ## For Society
 1) Promotes Innovation and Collaboration: Open source hardware fosters an environment where engineers, designers, and hobbyists can collaborate globally to improve designs and innovate. This collective effort accelerates the development of new technologies and solutions to real-world problems.
 2) Increases Accessibility: By making hardware designs freely available, open source hardware lowers the barriers to entry for individuals and small organizations who wish to create custom solutions or learn about hardware development. This democratizes technology, making it more accessible to people around the world, including those in resource-constrained environments.
