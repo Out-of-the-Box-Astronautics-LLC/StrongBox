@@ -30,7 +30,7 @@ from nicegui.events import ValueChangeEventArguments    # Catch button, radio bu
 
 # Unofficial API for the Sense Energy Monitor
 # https://github.com/scottbonline/sense
-from sense_energy import Senseable                      # Used to connect to the Sense hardware in factory https://sense.com/sense-home-energy-monitor
+# TODO from sense_energy import Senseable                      # Used to connect to the Sense hardware in factory https://sense.com/sense-home-energy-monitor
 
 # Load environment variables for usernames, passwords, & API keys
 # https://pypi.org/project/python-dotenv/
@@ -42,7 +42,7 @@ from Database import Database                           # Store non-Personally I
 import UserInterface                                    # Update the bar graph UI
 
 ## Global Variables
-sense = Senseable()                         # Object to authenticate and collect realtime trends
+#TODO sense = Senseable()                         # Object to authenticate and collect realtime trends
 instantPower = 0                            # Instant power (in Watts) being measured by the Sense device
 dailyEnergyUsage = 0                        # Total energy (in kWh) measured by the Sense device so far (12:01 am to function call time)
 currentGuiState = 0                         # State Machine number for the current GUI layout

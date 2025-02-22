@@ -33,7 +33,7 @@ from pytz import timezone
 
 # Turso online SQLite database
 # https://docs.turso.tech/sdk/python/quickstart
-import libsql_experimental as libsql
+#TODO for Jetson Orin import libsql_experimental as libsql
 
 # Load environment variables for usernames, passwords, & API keys
 # Used to login into Sense API
@@ -70,7 +70,7 @@ class Database:
 
         else:
             # Local SQLite .db file
-            self.conn = libsql.connect(filename)
+            self.conn = sqlite3.connect(filename) #TODO Fix for Jetson Orin libsql.connect(filename)
             self.cursor = self.conn.cursor()
             self.dbOnline = False
 
@@ -428,7 +428,7 @@ if __name__ == "__main__":
 
     print("Creating online database")
     isOnline = True
-    db2 = Database('strongbox-gui-db.db', isOnline)
+    #TODO for Jetson Orin db2 = Database('strongbox-gui-db.db', isOnline)
 
     date = db1.get_date_time()
     isoDateDay = date.isoformat()[0:10]
@@ -445,8 +445,8 @@ if __name__ == "__main__":
 
     db1.insert_day_graph_table(oxygenLevel, carbonMonoxideLevel, powerDraw, missionStartHour, dayOfYear)
 
-    results = db2.query_table("CraterTable", "Shackelton Crater")
-    if GC.DEBUG_STATEMENTS_ON: print(results)
+    #TODO results = db2.query_table("CraterTable", "Shackelton Crater")
+    #TODO if GC.DEBUG_STATEMENTS_ON: print(results)
 
 
     """
