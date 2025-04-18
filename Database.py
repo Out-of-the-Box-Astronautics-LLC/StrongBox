@@ -55,44 +55,53 @@ class Database:
     def __init__(self, filename: str = 'test.db', isOnline: bool = False):
         """ Constructor to initialize an Database object
         """
-        if isOnline:
-            config = dotenv_values()
-            url = config['STRONG_BOX_GUI_DB_URL']
-            authToken = config['STRONG_BOX_GUI_DB_TOKEN']
+        try:
+            if isOnline:
+                config = dotenv_values()
+                url = config['STRONG_BOX_GUI_DB_URL']
+                authToken = config['STRONG_BOX_GUI_DB_TOKEN']
 
 
-            self.conn = libsql.connect('strongbox-gui-db.db', sync_url=url, auth_token=authToken)
-            self.conn.sync()
-            self.dbOnline = True
+                self.conn = libsql.connect('strongbox-gui-db.db', sync_url=url, auth_token=authToken)
+                self.conn.sync()
+                self.dbOnline = True
 
-            if GC.DEBUG_STATEMENTS_ON: print(f"URL: {url}")
-            if GC.DEBUG_STATEMENTS_ON: print(f"TOKEN: {authToken}")
+                if GC.DEBUG_STATEMENTS_ON: print(f"URL: {url}")
+                if GC.DEBUG_STATEMENTS_ON: print(f"TOKEN: {authToken}")
 
-        else:
-            # Local SQLite .db file
-            self.conn = sqlite3.connect(filename) #TODO Fix for Jetson Orin libsql.connect(filename)
-            self.cursor = self.conn.cursor()
-            self.dbOnline = False
-
-            # Create ?TODO? tables in .db file for collecting Moon data
-            self.cursor.execute('''CREATE TABLE IF NOT EXISTS CraterTable       (id INTEGER PRIMARY KEY, human_crater_name TEXT, crater_diameter_meters REAL, latitude REAL, longitude REAL, timestamp TEXT)''')
-            self.cursor.execute('''CREATE TABLE IF NOT EXISTS DayGraphTable     (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, hour_of_day_number INTEGER, day_of_year INTEGER)''')
-            self.cursor.execute('''CREATE TABLE IF NOT EXISTS WeekGraphTable    (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, week_number INTEGER)''')
-            self.cursor.execute('''CREATE TABLE IF NOT EXISTS MonthGraphTable   (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, month_number TEXT)''')
-
-            # Create debuging log
-            self.cursor.execute('''CREATE TABLE IF NOT EXISTS DebugLoggingTable (id INTEGER PRIMARY KEY, logMessage TEXT)''')
-
-
-            if Database.check_table_exists(filename, "DayGraphTable"):
-                pass # Do nothing since tables were create at with Database.py object
             else:
-                # Configure graph database at .db file creation
-                print(f"The table '{table_name}' does not exist in the database '{db_name}'.")
-                self.setup_graph_tables()
+                # SBX-002: Warn and recover if database file is missing
+                if not os.path.exists(filename):
+                    print(f"WARNING: Database file '{filename}' does not exist. A new database will be created.")
+                self.conn = sqlite3.connect(filename) #TODO Fix for Jetson Orin libsql.connect(filename)
+                self.cursor = self.conn.cursor()
+                self.dbOnline = False
 
-            # Commit the five tables to database
-            self.conn.commit()
+                # Create ?TODO? tables in .db file for collecting Moon data
+                self.cursor.execute('''CREATE TABLE IF NOT EXISTS CraterTable       (id INTEGER PRIMARY KEY, human_crater_name TEXT, crater_diameter_meters REAL, latitude REAL, longitude REAL, timestamp TEXT)''')
+                self.cursor.execute('''CREATE TABLE IF NOT EXISTS DayGraphTable     (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, hour_of_day_number INTEGER, day_of_year INTEGER)''')
+                self.cursor.execute('''CREATE TABLE IF NOT EXISTS WeekGraphTable    (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, week_number INTEGER)''')
+                self.cursor.execute('''CREATE TABLE IF NOT EXISTS MonthGraphTable   (id INTEGER PRIMARY KEY, o2_level INTEGER, co2_level INTEGER, watt_hours INTEGER, month_number TEXT)''')
+
+                # Create debuging log
+                self.cursor.execute('''CREATE TABLE IF NOT EXISTS DebugLoggingTable (id INTEGER PRIMARY KEY, logMessage TEXT)''')
+
+
+                if Database.check_table_exists(filename, "DayGraphTable"):
+                    pass # Do nothing since tables were create at with Database.py object
+                else:
+                    # Configure graph database at .db file creation
+                    print(f"The table '{table_name}' does not exist in the database '{db_name}'.")
+                    self.setup_graph_tables()
+
+                # Commit the five tables to database
+                self.conn.commit()
+        except Exception as e:
+            # SBX-002: Handle initialization errors gracefully
+            print(f"ERROR: Failed to initialize database: {e}")
+            self.conn = None
+            self.cursor = None
+            self.dbOnline = False
 
 
     def check_table_exists(db_name, table_name):
@@ -243,7 +252,7 @@ class Database:
         Returns:
             int: Database index id of last row inserted
         """
-        timeStamp = str(datetime.strptime(date, '%Y-%m-%d').isoformat(timespec="minutes")[0:10])
+        timeStamp = str(datetime.strptime(date, '%Y-%m-%d').isoformat(timespec="minutes")[0:10]
         current_week_number = datetime.strptime(date, '%Y-%m-%d').isocalendar()[1]
 
         results, isEmpty, isValid = self.get_daily_sensor_data(timeStamp)

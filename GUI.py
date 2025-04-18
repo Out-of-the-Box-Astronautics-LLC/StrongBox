@@ -24,6 +24,7 @@ __version__    = "0.0.1"
 ## Standard Python libraries
 import sys          	# Used to determine which OS (MacOS, Linux, or Windows) code is running on
 from time import sleep	# Used to program pause execution
+import os              # Used to check environment variables
 
 ## 3rd Party Libraries
 # Browser base GUI framework to build and display a user interface mobile, PC, and Mac
@@ -76,7 +77,17 @@ def page_refresh(cameras):
     cameraA270image.update()
 
 
+def check_headless_environment():
+    # SBX-003: Detect and handle headless environment for GUI
+    import sys, os
+    if sys.platform.startswith('linux') and not os.environ.get('DISPLAY'):
+        print("No display found. GUI cannot be launched in a headless environment.")
+        sys.exit(1)
+
+
 if __name__ in {"__main__", "__mp_main__"}:
+    check_headless_environment()  # SBX-003: Call headless check at startup
+
     darkMode.disable()
 
     db1 = db.Database("strongbox-gui-db.db")

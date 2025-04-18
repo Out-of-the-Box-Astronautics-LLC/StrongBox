@@ -1,88 +1,57 @@
+# TEST PLAN: USB Camera Verification on Jetson
+# 1. Plug in your standard USB camera (disconnect iPhone).
+# 2. Run: ls /dev/video*
+#    - Confirm your camera appears (usually as /dev/video0).
+# 3. Run: v4l2-ctl --list-devices
+#    - Confirm your camera is listed and note its /dev/videoX node.
+# 4. Check your user is in the video group: groups $USER
+#    - If not, run: sudo usermod -aG video $USER (then log out/in).
+# 5. Run the updated Camera.py: python Camera.py
+#    - You should see a message that the USB camera opened successfully and a test image saved in static/images.
+# 6. If you encounter issues, try a different index, check permissions, or ensure no other app is using the camera.
+
+# TEST CODE: See the __main__ section below for a simple test that captures and saves an image from the USB camera.
+
 import GlobalConstants as GC
-
-# pip install opencv-python
 import cv2
-
-# pip install libusb1
-# usb1 is Python wrapper for libusb, a C library that provides generic access to USB devices.
-import usb1
-
 import time
+import os
 
 class Camera:
-
-    def __init__(self):
+    def __init__(self, camera_index=0):
         self.numOfPhotos = 0
-        self.serialNumber = Camera.get_serial_number()
-
-
-    def get_serial_number():
-        # Initialize libusb context
-        try:
-            with usb1.USBContext() as context:
-                # Open the iPhone 14 Pro Max Camera as USB device by Vendor ID and Product ID (Bus 002 Device 004: ID 05ac:12a8) found using 'lsusb' command
-                handle = context.openByVendorIDAndProductID(0x05AC, 0x12A8)
-                
-                if handle is None:
-                    print("Failed to open device")
-                    return 1
-                
-                # Read the serial number string descriptor (usually index 3, but this may vary)
-                serial_number_index = 3
-                try:
-                    serialNumber = handle.getASCIIStringDescriptor(serial_number_index)
-                    return serialNumber
-                except usb1.USBError as e:
-                    print(f"Failed to read serial number: {e}")
-                    return 1
-                
-        except usb1.USBError as e:
-            print(f"Failed to initialize libusb: {e}")
-            return 1
-
+        self.camera_index = camera_index
+        # Serial number logic removed for generic USB camera support
 
     def take_picture(self):
-        # Open the camera (0 usually refers to the default camera)
-        camera = cv2.VideoCapture(0)
-        
+        # SBX-004: Added error handling for missing camera device
+        print(f"Trying to open USB camera at index {self.camera_index} (V4L2 backend)...")
+        camera = cv2.VideoCapture(self.camera_index, cv2.CAP_V4L2)
         if not camera.isOpened():
-            print("Failed to open camera")
-            return
-
+            print(f"Error: Failed to open camera at index {self.camera_index} using V4L2 backend. No camera device detected.")
+            return None
         # Capture a single frame
         ret, frame = camera.read()
-
         if not ret:
-            print("Failed to capture image")
-        
-        # Save the captured frame as an image
-        imageFileName = f"/Users/pluto/GitRepos/StrongBox/static/images/iPhoneImage{self.numOfPhotos}_{int(time.time())}.jpg"
-        #imageFileName = f"/Users/pluto/GitRepos/StrongBox/static/images/iPhoneImage{self.numOfPhotos}_{int(time.time())}_{self.serialNumber}.jpg"
+            print("Error: Failed to capture image from camera.")
+            camera.release()
+            return None
+        # Save the captured frame as an image in a cross-platform way
+        images_dir = os.path.join(os.path.dirname(__file__), 'static', 'images')
+        os.makedirs(images_dir, exist_ok=True)
+        imageFileName = os.path.join(images_dir, f"USBImage{self.numOfPhotos}_{int(time.time())}.jpg")
         cv2.imwrite(imageFileName, frame)
-        print(f"{imageFileName} captured and saved successfully from camera serial #{self.serialNumber}")
-        self.numOfPhotos = self.numOfPhotos + 1
-        
-        # Release the camera
+        print(f"{imageFileName} captured and saved successfully from camera index {self.camera_index}")
+        self.numOfPhotos += 1
         camera.release()
         return imageFileName
 
-
 if __name__ == "__main__":
-    cameras = []
-    for i in range(GC.NUMBER_OF_CAMERAS):
-        camera = Camera() 
-        cameras.append(camera)
-                  
-    cameras[0].take_picture()
-    cameras[0].take_picture()
-    cameras[0].take_picture()
-    cameras[1].take_picture()
-    cameras[2].take_picture()
-    cameras[3].take_picture()
-    cameras[4].take_picture()
-    cameras[5].take_picture()
-    cameras[6].take_picture()
-    cameras[7].take_picture()
-    cameras[8].take_picture()
-    cameras[9].take_picture()
+    # Only test the first camera (index 0) for USB camera verification
+    camera = Camera(camera_index=0)
+    result = camera.take_picture()
+    if result:
+        print(f"Test image saved: {result}")
+    else:
+        print("Camera test failed. See error messages above.")
 
