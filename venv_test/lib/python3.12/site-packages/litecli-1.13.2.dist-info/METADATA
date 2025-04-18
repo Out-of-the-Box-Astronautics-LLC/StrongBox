@@ -1,0 +1,80 @@
+Metadata-Version: 2.1
+Name: litecli
+Version: 1.13.2
+Summary: CLI for SQLite Databases with auto-completion and syntax highlighting.
+Author-email: dbcli <litecli-users@googlegroups.com>
+License: BSD
+Project-URL: homepage, https://github.com/dbcli/litecli
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: cli-helpers[styles]>=2.2.1
+Requires-Dist: click>=4.1
+Requires-Dist: configobj>=5.0.5
+Requires-Dist: prompt-toolkit<4.0.0,>=3.0.3
+Requires-Dist: pygments>=1.6
+Requires-Dist: sqlparse>=0.4.4
+Provides-Extra: dev
+Requires-Dist: behave>=1.2.6; extra == "dev"
+Requires-Dist: coverage>=7.2.7; extra == "dev"
+Requires-Dist: pexpect>=4.9.0; extra == "dev"
+Requires-Dist: pytest>=7.4.4; extra == "dev"
+Requires-Dist: pytest-cov>=4.1.0; extra == "dev"
+Requires-Dist: tox>=4.8.0; extra == "dev"
+Requires-Dist: pdbpp>=0.10.3; extra == "dev"
+
+# litecli
+
+[![GitHub Actions](https://github.com/dbcli/litecli/actions/workflows/ci.yml/badge.svg)](https://github.com/dbcli/litecli/actions/workflows/ci.yml "GitHub Actions")
+
+[Docs](https://litecli.com)
+
+A command-line client for SQLite databases that has auto-completion and syntax highlighting.
+
+![Completion](screenshots/litecli.png)
+![CompletionGif](screenshots/litecli.gif)
+
+## Installation
+
+If you already know how to install python packages, then you can install it via pip:
+
+You might need sudo on linux.
+
+```
+$ pip install -U litecli
+```
+
+The package is also available on Arch Linux through AUR in two versions: [litecli](https://aur.archlinux.org/packages/litecli/) is based the latest release (git tag) and [litecli-git](https://aur.archlinux.org/packages/litecli-git/) is based on the master branch of the git repo. You can install them manually or with an AUR helper such as `yay`:
+
+```
+$ yay -S litecli
+```
+
+or
+
+```
+$ yay -S litecli-git
+```
+
+For MacOS users, you can also use Homebrew to install it:
+
+```
+$ brew install litecli
+```
+
+## Usage
+
+```
+$ litecli --help
+
+Usage: litecli [OPTIONS] [DATABASE]
+
+Examples:
+  - litecli sqlite_db_name
+```
+
+A config file is automatically created at `~/.config/litecli/config` at first launch. For Windows machines a config file is created at `~\AppData\Local\dbcli\litecli\config` at first launch. See the file itself for a description of all available options.
+
+## Docs
+
+Visit: [litecli.com/features](https://litecli.com/features)
