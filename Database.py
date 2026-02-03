@@ -252,7 +252,7 @@ class Database:
         Returns:
             int: Database index id of last row inserted
         """
-        timeStamp = str(datetime.strptime(date, '%Y-%m-%d').isoformat(timespec="minutes")[0:10]
+        timeStamp = str(datetime.strptime(date, '%Y-%m-%d').isoformat(timespec="minutes"))[0:10]
         current_week_number = datetime.strptime(date, '%Y-%m-%d').isocalendar()[1]
 
         results, isEmpty, isValid = self.get_daily_sensor_data(timeStamp)

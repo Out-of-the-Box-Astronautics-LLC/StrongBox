@@ -12,7 +12,7 @@ moon.angle = 0
 
 targetPos = (0, 0)
 landerPosition = (0, HEIGHT // 2)
-landerVelocity = (10, 0)
+landerVelocity = (5, 5)
 
 thrustLevel = 0
 isThrustOn = False
@@ -34,8 +34,10 @@ def draw():
 
     if fuelRemaining <= 0:
         screen.draw.text("Game Over", (WIDTH // 2 - 100, HEIGHT // 2))
+
     else:
         screen.draw.text(f"Fuel: {fuelRemaining}%", (10, 10))
+
         if thrustLevel == 0 or not isThrustOn:
             screen.draw.text("Thrust: OFF", (10, 40))
         elif thrustLevel == 1:
@@ -45,25 +47,34 @@ def draw():
 
 
 def update_fuel(thrustLevel):
-    global fuelRemaining, landerPosition, targetPos, isThrustOn
-
-    if keyboard.up and thrustLevel > 0 and fuelRemaining > 0:
-        sounds.thrust.play()
-        isThrustOn = True
+    global fuelRemaining, landerPosition, targetPos, isThrustOn, landerVelocity
 
     if isThrustOn:
+        sounds.thrust.play()
         fuelRemaining -= 1
         xDelta = targetPos[0] - landerPosition[0]
         yDelta = targetPos[1] - landerPosition[1]
+
+        if abs(xDelta) < 10:
+            landerPosition = (targetPos[0], landerPosition[1])
+
+        if abs(yDelta) < 10:
+            landerPosition = (landerPosition[0], targetPos[1])
+
+        if abs(xDelta) < 10 and abs(yDelta) < 10:
+            sounds.thrust.stop()
+            isThrustOn = False
+
+
         if xDelta < 0:
-            landerPosition = (landerPosition[0] - thrustLevel * 10, landerPosition[1])
+            landerPosition = (landerPosition[0] - thrustLevel * landerVelocity[0], landerPosition[1])
         elif xDelta > 0:
-            landerPosition = (landerPosition[0] + thrustLevel * 10, landerPosition[1])
+            landerPosition = (landerPosition[0] + thrustLevel * landerVelocity[0], landerPosition[1])
 
         if yDelta < 0:
-            landerPosition = (landerPosition[0], landerPosition[1] - thrustLevel * 10)
+            landerPosition = (landerPosition[0], landerPosition[1] - thrustLevel * landerVelocity[1])
         elif yDelta > 0:
-            landerPosition = (landerPosition[0], landerPosition[1] + thrustLevel * 10)
+            landerPosition = (landerPosition[0], landerPosition[1] + thrustLevel * landerVelocity[1])
         draw()
 
     if keyboard.down or thrustLevel == 0 or fuelRemaining <= 0:
@@ -73,11 +84,11 @@ def update_fuel(thrustLevel):
 
 def on_mouse_down(pos, button):
     global landerPosition, targetSelected, targetPos
+
     if button == mouse.LEFT:
         targetSelected = True
         targetPos = pos
         draw()
-        print(f"You click left button at {pos}")
 
 
 def update():
